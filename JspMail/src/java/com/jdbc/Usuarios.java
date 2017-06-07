@@ -48,27 +48,6 @@ public class Usuarios
         return retorno;
     }
     
-    public boolean temEmail (String email) throws Exception
-    {
-        boolean retorno = false;
-        
-        try{
-            String sql;
-            sql = "SELECT * FROM UsuarioMaligno WHERE email='"+email+"'";
-            DAOs.getBD().prepareStatement(sql);
-            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
-            
-            retorno = resultado.first();
-        }
-        
-        catch(SQLException erro)
-    	{
-    		throw new Exception ("Erro ao procurar email.");
-    	}
-    	
-    	return retorno;
-    }
-    
     public boolean cadastrado (Usuario usuario) throws Exception
     {
     	boolean retorno = false;
