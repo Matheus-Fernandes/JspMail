@@ -3,19 +3,6 @@
 
 <!DOCTYPE html>
 <html>
-    
-    <jsp:useBean id="usuarioDao" scope="page" class="com.jdbc.Usuarios"/>
-    
-    <c:if test = "${param.operation == 'cadastrar'}">
-        <jsp:forward page="cadastrar.jsp" />
-    </c:if>
-    <c:if test = "${param.operation == 'logar'}">
-        <c:set scope="session" var="isCadastrado" value="${usuarioDao.cadastrado(param.email, param.senha)}"/>
-        <c:if test="${sessionScope.isCadastrado}">
-            <jsp:forward page="dashboard.jsp"/>
-        </c:if>
-    </c:if>
-    
     <head>
         <title>Login</title>
         <meta charset="UTF-8">
@@ -24,31 +11,35 @@
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     </head>
+    
     <body>
+        <jsp:useBean id="usuarioDao" scope="page" class="com.jdbc.Usuarios"/>
+
+        <c:if test = "${param.operation == 'cadastrar'}">
+            <jsp:forward page="cadastrar.jsp" />
+        </c:if>
+        <c:if test = "${param.operation == 'logar'}">
+            <c:set scope="session" var="isCadastrado" value="${usuarioDao.cadastrado(param.email, param.senha)}"/>
+            <c:if test="${sessionScope.isCadastrado}">
+                <jsp:forward page="dashboard.jsp"/>
+            </c:if>
+        </c:if>
+        
         <div class="panel panel-default container clearfix" style="width: 300px; padding: 30px">
             <form method="get" action="index.jsp">
-            <div class="content" style="text-transform: uppercase; font-weight: bold">
-                <center><h3>Email Maligno</h3><center>
-            </div>
+            
+            <m:titulo valor="Email Maligno" />
             <br>
-
-            <div class="form-group">
-
-            <label for="email">Email</label>
-            <input type="text" class="form-control" name="email" value="">
-            </div>
-
-            <div class="form-group">
-            <label for="senha">Senha</label>
-            <input type="password" class="form-control" name="senha" value="">
-            </div> 
+            <m:campo nome="email" tipo="text" label="Email"/>
+            <m:campo nome="senha" tipo="password" label="Senha"/>
             <br>
+            
             <div class="input-group-btn">
                 <button style="width: 60%" type="submit" name="operation" value = "logar" class="btn btn-default">Logar</button>
                 <button style="width: 40%" type="submit" name="operation" value = "cadastrar" class="btn btn-default">Cadastrar</button>               
             </div>
            
-            <m:aviso mensagem="${param.aviso.texto}" tipo="${param.aviso.tipo}"/>
+            <m:aviso valor="${param.aviso_texto}" tipo="${param.aviso_tipo}"/>
 
             </form>
         </div>

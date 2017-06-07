@@ -1,4 +1,4 @@
-package br.cotuca.unicamp;
+package com.jdbc;
 
 import java.sql.*;
 
