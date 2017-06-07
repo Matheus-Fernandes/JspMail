@@ -1,4 +1,4 @@
-package com.jdbc;
+package br.cotuca.unicamp;
 
 import java.sql.Array;
 import java.sql.Blob;

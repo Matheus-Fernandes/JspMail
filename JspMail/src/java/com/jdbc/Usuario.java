@@ -1,19 +1,16 @@
-package com.jdbc;
+package br.cotuca.unicamp;
 
 public class Usuario
-{    
+{
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "email=" + email + ", senha=" + senha+  "}";
+    }
+    
     private String email;
     private String senha;
   
-        public Usuario (String email, String senha) throws Exception
-    {
-        this.email = email;
-        this.senha = senha;
-    }
-    
-    public Usuario(){
-        
-    }
 
     public void setEmail (String email) throws Exception
     {
@@ -34,9 +31,13 @@ public class Usuario
     {
         return this.senha;
     }
-    
-    @Override
-    public String toString() {
-        return "Usuario{" + "email=" + email + ", senha=" + senha+  "}";
-    } 
+
+    public Usuario (String email, String senha) throws Exception
+    {
+        this.setEmail (email);
+        this.setSenha (senha);
+    }
+
+    // � claro que os m�todos obrigat�rios deveriam ser feitos
+    // para a implementa��o ficar completa
 }

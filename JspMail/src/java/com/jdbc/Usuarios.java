@@ -1,4 +1,4 @@
-package com.jdbc;
+package br.cotuca.unicamp;
 
 import java.sql.*;
 
@@ -19,26 +19,6 @@ public class Usuarios
             MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
 
             retorno = resultado.first();
-
-            /* // ou, se preferirmos,
-
-            String sql;
-
-            sql = "SELECT COUNT(*) AS QUANTOS " +
-                  "FROM LIVROS " +
-                  "WHERE CODIGO = ?";
-
-            DAOs.getBD().prepareStatement (sql);
-
-            DAOs.getBD().setInt (1, codigo);
-
-            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
-
-            resultado.first();
-
-            retorno = resultado.getInt("QUANTOS") != 0;
-
-            */
         }
         catch (SQLException erro)
         {
@@ -260,9 +240,5 @@ public class Usuarios
         }
 
         return resultado;
-    }
-    
-    public static void main(String args[]){
-        
     }
 }
