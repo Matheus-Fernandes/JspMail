@@ -1,4 +1,4 @@
-package com.jdbc;
+package br.cotuca.unicamp;
 
 import java.util.ArrayList;
 import java.sql.Connection;

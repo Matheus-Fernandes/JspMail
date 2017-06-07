@@ -1,4 +1,4 @@
-package com.jdbc;
+package br.cotuca.unicamp;
 
 public class DAOs
 {

@@ -1,4 +1,4 @@
-package com.jdbc;
+package br.cotuca.unicamp;
 
 import java.io.InputStream;
 import java.io.Reader;
