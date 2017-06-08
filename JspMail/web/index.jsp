@@ -10,13 +10,11 @@
         <script src="bootstrap/jquery.min.js"></script>
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-    </head>
-    
-    <body>
+        
         <jsp:useBean id="usuarioDao" scope="page" class="com.jdbc.Usuarios"/>
 
         <c:if test = "${param.operation == 'cadastrar'}">
-            <jsp:forward page="cadastrar.jsp" />
+            <c:redirect url="cadastrar.jsp" />
         </c:if>
         <c:if test = "${param.operation == 'logar'}">
             <c:set scope="session" var="isCadastrado" value="${usuarioDao.cadastrado(param.email, param.senha)}"/>
@@ -24,6 +22,10 @@
                 <jsp:forward page="dashboard.jsp"/>
             </c:if>
         </c:if>
+                
+    </head>
+    
+    <body>
         
         <div class="panel panel-default container clearfix" style="width: 300px; padding: 30px">
             <form method="get" action="index.jsp">

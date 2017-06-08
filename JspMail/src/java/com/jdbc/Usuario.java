@@ -37,6 +37,10 @@ public class Usuario
         this.setEmail (email);
         this.setSenha (senha);
     }
+    
+    public Usuario(){
+        
+    }
 
     // � claro que os m�todos obrigat�rios deveriam ser feitos
     // para a implementa��o ficar completa

@@ -70,7 +70,7 @@ public class Usuarios
     	return retorno;
     }
 
-    public void incluir (Usuario usuario) throws Exception
+    public boolean incluir (Usuario usuario) throws Exception
     {
         if (usuario==null)
             throw new Exception ("Usuario nao fornecido");
@@ -85,11 +85,16 @@ public class Usuarios
 
             DAOs.getBD().executeUpdate ();
             DAOs.getBD().commit        ();
+            
+            if (cadastrado(usuario))
+                return true;
+            
+            return false;
         }
         catch (SQLException erro)
         {
             throw new Exception ("Erro ao inserir usuario");
-        }
+        }   
     }
 
     public void excluir (String email) throws Exception

@@ -15,7 +15,7 @@
 </c:if>
 <c:if test="${tipo == 'SUCESSO'}">
     <center>
-    <span style="color: greenyellow; font-weight: bolder ">
+    <span style="color: #449d44; font-weight: bolder ">
        <c:out value="${valor}"/>
     </span>
     </center>
