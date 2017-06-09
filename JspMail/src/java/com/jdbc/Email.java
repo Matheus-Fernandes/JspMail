@@ -11,24 +11,42 @@ public class Email
     private String emailPrincipal;
     private String outroEmail;
     private String senha;
-    private String servidor;
+    private String servidorRecebimento;
+    private int    portaRecebimento;
+    private String servidorEnvio;
+    private int    portaEnvio;
 
-    public String getServidor() {
-        return servidor;
+    public String getServidorRecebimento() {
+        return servidorRecebimento;
     }
 
-    public void setServidor(String servidor) {
-        this.servidor = servidor;
+    public void setServidorRecebimento(String servidor) {
+        this.servidorRecebimento = servidor;
+    }
+    
+    public String getServidorEnvio() {
+        return servidorEnvio;
     }
 
-    public int getPorta() {
-        return porta;
+    public void setServidorEnvio(String servidor) {
+        this.servidorEnvio = servidor;
     }
 
-    public void setPorta(int porta) {
-        this.porta = porta;
+    public int getPortaRecebimento() {
+        return portaRecebimento;
     }
-    private int    porta;
+
+    public void setPortaRecebimento(int porta) {
+        this.portaRecebimento = porta;
+    }
+    
+    public int getPortaEnvio() {
+        return portaEnvio;
+    }
+
+    public void setPortaEnvio(int porta) {
+        this.portaEnvio = porta;
+    }
   
 
     public void setEmailPrincipal (String email) throws Exception
@@ -61,13 +79,15 @@ public class Email
         return this.senha;
     }
 
-    public Email (String principal, String email, String senha, String server, int porta) throws Exception
+    public Email (String principal, String email, String senha, String serverRecebimento, int portaRecebimento, String serverEnvio, int portaEnvio) throws Exception
     {
         this.setEmailPrincipal(principal);
         this.setOutroEmail (email);
         this.setSenha (senha);
-        this.setServidor(server);
-        this.setPorta(porta);
+        this.setServidorRecebimento(serverRecebimento);
+        this.setPortaRecebimento(portaRecebimento);
+        this.setServidorEnvio(serverEnvio);
+        this.setPortaEnvio(portaEnvio);
     }
     
     public Email () throws Exception

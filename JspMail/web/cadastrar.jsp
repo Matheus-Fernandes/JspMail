@@ -15,6 +15,8 @@
     <body>
         <jsp:useBean id="usuarioDao" scope="page" class="com.jdbc.Usuarios"/>
         <jsp:useBean id="usuario" scope="page" class="com.jdbc.Usuario"/>
+        <jsp:useBean id="email" scope="page" class="com.jdbc.Email"/>
+        <jsp:useBean id="emailDao" scope="page" class="com.jdbc.Emails"/>
         
         <c:if test = "${param.operation == 'voltar'}">
             <jsp:forward page="index.jsp" />
@@ -22,6 +24,14 @@
         <c:if test = "${param.operation == 'cadastrar'}">
             ${usuario.setEmail(param.email)}
             ${usuario.setSenha(param.senha)}
+            
+            ${email.setEmailPrincipal(param.email)}
+            ${email.setOutroEmail(param.email)}
+            ${email.setSenha(param.senha)}
+            ${email.setServidorRecebimento(param.servidorRecebimento)}
+            ${email.setPortaRecebimento(Integer.parseInt(param.portaRecebimento))}
+            ${email.setServidorEnvio(param.servidorEnvio)}
+            ${email.setPortaEnvio(Integer.parseInt(param.portaEnvio))}
             <c:set scope="session" var="jaExiste" value="${usuarioDao.cadastradoEmail(param.email)}"/>
             
             <c:if test="${sessionScope.jaExiste}">
@@ -37,8 +47,16 @@
                     <c:set scope="session" var="usuarioCadastrado" value="${usuarioDao.incluir(usuario)}"/>
 
                     <c:if test="${sessionScope.usuarioCadastrado}">
-                        <c:set scope="session" var="aviso_texto" value="Usuario cadastrado com sucesso!"/>
-                        <c:set scope="session" var="aviso_tipo" value="SUCESSO"/>
+                        <c:set scope="session" var="emailCadastrado" value="${emailDao.incluir(email)}"/>
+                        
+                        <c:if test="${sessionScope.emailCadastrado}">
+                            <c:set scope="session" var="aviso_texto" value="Usuario cadastrado com sucesso!"/>
+                            <c:set scope="session" var="aviso_tipo" value="SUCESSO"/>
+                        </c:if>
+                        <c:if test="${!sessionScope.emailCadastrado}">
+                            <c:set scope="session" var="aviso_texto" value="Falha no cadastro de usuario."/>
+                            <c:set scope="session" var="aviso_tipo" value="ERRO"/>
+                        </c:if>
                     </c:if>
                     <c:if test="${!sessionScope.usuarioCadastrado}">
                         <c:set scope="session" var="aviso_texto" value="As senhas informadas não são iguais!"/>
@@ -63,6 +81,10 @@
             <m:campo nome="email" tipo="text" label="Email"/>
             <m:campo nome="senha" tipo="password" label="Senha"/>
             <m:campo nome="confirmacao" tipo="password" label="Confirmação de senha"/>
+            <m:campo nome="servidorRecebimento" tipo="text" label="Servidor de Recebimento"/>
+            <m:campo nome="portaRecebimento" tipo="number" label="Porta de Recebimento"/>
+            <m:campo nome="servidorEnvio" tipo="text" label="Servidor de Envio"/>
+            <m:campo nome="portaEnvio" tipo="number" label="Porta de Envio"/>
             <br>
             
             <div class="input-group-btn">

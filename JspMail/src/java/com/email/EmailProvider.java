@@ -84,8 +84,11 @@ public class EmailProvider
      public static void main(String[] args) {
 
         try {
-            Email email = new Email("aaa", "marcioteste28@gmail.com", "@@123123");    
-            email.setHostRecebimento("pop.gmail.com");
+            Email email = new Email();
+            email.setEmailPrincipal("aaa");    
+            email.setOutroEmail("marcioteste28@gmail.com");
+            email.setSenha("@@123123");
+            email.setServidorRecebimento("pop.gmail.com");
             email.setPortaRecebimento(995);
             EmailProvider provider = new EmailProvider(email);
                        

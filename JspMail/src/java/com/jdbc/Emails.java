@@ -125,7 +125,7 @@ public class Emails
         {
             String sql;
 
-            sql = "INSERT INTO EmailCadastrado (emailPrincipal, outroEmail, senha, servidor, porta) VALUES ('"+email.getEmailPrincipal()+"', '"+ email.getOutroEmail()+"', '"+email.getSenha()+"', '"+email.getServidor()+"', '"+email.getPorta()+"')";
+            sql = "INSERT INTO EmailCadastrado (emailPrincipal, outroEmail, senha, servidorRecebimento, portaRecebimento, servidorEnvio, portaEnvio) VALUES ('"+email.getEmailPrincipal()+"', '"+ email.getOutroEmail()+"', '"+email.getSenha()+"', '"+email.getServidorRecebimento()+"', "+email.getPortaRecebimento()+", '"+email.getServidorEnvio()+"', "+email.getPortaEnvio()+")";
 
             DAOs.getBD().prepareStatement (sql);
 
@@ -212,7 +212,7 @@ public class Emails
         {
             String sql;
 
-            sql = "UPDATE EmailCadastrado SET emailPrincipal='"+email.getEmailPrincipal()+"', outroEmail='"+email.getOutroEmail()+"', senha='"+email.getSenha()+"', servidor='"+email.getServidor()+"', porta='"+email.getPorta()+"' WHERE emailPrincipal='"+emailPrincipal+"'";
+            sql = "UPDATE EmailCadastrado SET emailPrincipal='"+email.getEmailPrincipal()+"', outroEmail='"+email.getOutroEmail()+"', senha='"+email.getSenha()+"', servidorRecebimento='"+email.getServidorRecebimento()+"', portaRecebimento='"+email.getPortaRecebimento()+"', servidorEnvio='"+email.getServidorEnvio()+"', portaEnvio='"+email.getPortaEnvio()+"' WHERE emailPrincipal='"+emailPrincipal+"'";
 
             DAOs.getBD().prepareStatement (sql);
 
@@ -278,7 +278,13 @@ public class Emails
             if (!resultado.first())
                 throw new Exception ("Nao cadastrado");
 
-            email = new Email (resultado.getString("emailPrincipal"), resultado.getString("outroEmail"), resultado.getString("senha"), resultado.getString("servidor"), Integer.parseInt(resultado.getString("porta")));
+            email = new Email (resultado.getString("emailPrincipal"), 
+                               resultado.getString("outroEmail"), 
+                               resultado.getString("senha"), 
+                               resultado.getString("servidorRecebimento"), 
+                               Integer.parseInt(resultado.getString("portaRecebimento")), 
+                               resultado.getString("servidorEnvio"), 
+                               Integer.parseInt(resultado.getString("portaEnvio")));
         }
         catch (SQLException erro)
         {
@@ -304,19 +310,23 @@ public class Emails
             
             if (resultado.first()){
                 Email linha = new Email();
-                linha.setEmailPrincipal(resultado.getString(1));
-                linha.setOutroEmail(resultado.getString(2));
-                linha.setSenha(resultado.getString(3));
-                linha.setServidor(resultado.getString(4));
-                linha.setPorta(Integer.parseInt(resultado.getString(5)));
+                linha.setEmailPrincipal(resultado.getString(2));
+                linha.setOutroEmail(resultado.getString(3));
+                linha.setSenha(resultado.getString(4));
+                linha.setServidorRecebimento(resultado.getString(5));
+                linha.setPortaRecebimento(Integer.parseInt(resultado.getString(6)));
+                linha.setServidorEnvio(resultado.getString(7));
+                linha.setPortaEnvio(Integer.parseInt(resultado.getString(8)));
                 lista.add(linha);
                 
                 while (resultado.next()){
-                    linha.setEmailPrincipal(resultado.getString(1));
-                    linha.setOutroEmail(resultado.getString(2));
-                    linha.setSenha(resultado.getString(3));
-                    linha.setServidor(resultado.getString(4));
-                    linha.setPorta(Integer.parseInt(resultado.getString(5)));
+                    linha.setEmailPrincipal(resultado.getString(2));
+                    linha.setOutroEmail(resultado.getString(3));
+                    linha.setSenha(resultado.getString(4));
+                    linha.setServidorRecebimento(resultado.getString(5));
+                    linha.setPortaRecebimento(Integer.parseInt(resultado.getString(6)));
+                    linha.setServidorEnvio(resultado.getString(7));
+                    linha.setPortaEnvio(Integer.parseInt(resultado.getString(8)));
                     lista.add(linha);
                 }
             }
