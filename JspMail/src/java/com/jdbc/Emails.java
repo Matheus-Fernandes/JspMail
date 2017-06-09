@@ -1,6 +1,7 @@
 package com.jdbc;
 
 import java.sql.*;
+import java.util.List;
 
 public class Emails
 {
@@ -101,7 +102,7 @@ public class Emails
     	try
     	{
             String sql;
-            sql = "SELECT email FROM EmailCadastrado WHERE email='"+email.getEmailPrincipal()+"' AND outroEmail='"+email.getOutroEmail()+"' senha='"+email.getSenha()+"'";
+            sql = "SELECT emailPrincipal FROM EmailCadastrado WHERE emailPrincipal='"+email.getEmailPrincipal()+"' AND outroEmail='"+email.getOutroEmail()+"' AND senha='"+email.getSenha()+"'";
             DAOs.getBD().prepareStatement(sql);
             MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
             
@@ -109,13 +110,13 @@ public class Emails
     	}
     	catch(SQLException erro)
     	{
-    		throw new Exception ("Erro ao procurar email");
+            throw new Exception ("Erro ao procurar email");
     	}
     	
     	return retorno;
     }
 
-    public void incluir (Email email) throws Exception
+    public boolean incluir (Email email) throws Exception
     {
         if (email==null)
             throw new Exception ("Email nao fornecido");
@@ -124,12 +125,17 @@ public class Emails
         {
             String sql;
 
-            sql = "INSERT INTO EmailCadastrado (emailPrincipal, outroEmail ,senha) VALUES ('"+email.getEmailPrincipal()+"', '"+ email.getOutroEmail()+"', '"+email.getSenha()+"')";
+            sql = "INSERT INTO EmailCadastrado (emailPrincipal, outroEmail, senha, servidor, porta) VALUES ('"+email.getEmailPrincipal()+"', '"+ email.getOutroEmail()+"', '"+email.getSenha()+"', '"+email.getServidor()+"', '"+email.getPorta()+"')";
 
             DAOs.getBD().prepareStatement (sql);
 
             DAOs.getBD().executeUpdate ();
             DAOs.getBD().commit        ();
+            
+            if (cadastrado(email))
+                return true;
+            
+            return false;
         }
         catch (SQLException erro)
         {
@@ -137,49 +143,64 @@ public class Emails
         }
     }
 
-    public void excluir (String email) throws Exception
+    public boolean excluirOutroEmail (String outroEmail) throws Exception
     {       
-        if (temOutroEmail(email)){
+        if (temOutroEmail(outroEmail)){
             try
             {
                 String sql;
 
-                sql = "DELETE FROM EmailCadastrado WHERE outroEmail='"+email+"'";
+                sql = "DELETE FROM EmailCadastrado WHERE outroEmail='"+outroEmail+"'";
 
                 DAOs.getBD().prepareStatement (sql);
 
                 DAOs.getBD().executeUpdate ();
-                DAOs.getBD().commit        ();        }
+                DAOs.getBD().commit        ();  
+                
+                if (temOutroEmail(outroEmail))
+                    return false;
+                
+                return true;
+            }
             catch (SQLException erro)
             {
                 throw new Exception ("Erro ao excluir email");
             }
         }
-        else{
-            if (temEmailPrincipal(email)){
-                try
-                {
-                    String sql;
-
-                    sql = "DELETE FROM EmailCadastrado WHERE emailPrincipal='"+email+"'";
-
-                    DAOs.getBD().prepareStatement (sql);
-
-                    DAOs.getBD().executeUpdate ();
-                    DAOs.getBD().commit        ();        }
-                catch (SQLException erro)
-                {
-                    throw new Exception ("Erro ao excluir email");
-                }
-            }
-            else
-                throw new Exception ("Nao cadastrado");
-        }
-
         
+        else
+            throw new Exception ("Nao cadastrado");
+    }
+        
+    public boolean excluirEmailPrincipal (String email) throws Exception
+    {       
+        if (temEmailPrincipal(email)){
+            try
+            {
+                String sql;
+
+                sql = "DELETE FROM EmailCadastrado WHERE emailPrincipal='"+email+"'";
+
+                DAOs.getBD().prepareStatement (sql);
+
+                DAOs.getBD().executeUpdate ();
+                DAOs.getBD().commit        ();        
+                
+                if (temEmailPrincipal(email))
+                    return false;
+                
+                return true;
+            }
+            catch (SQLException erro)
+            {
+                throw new Exception ("Erro ao excluir email");
+            }
+        }
+        else
+            throw new Exception ("Nao cadastrado");
     }
 
-    public void alterar(String emailPrincipal, Email email) throws Exception
+    public boolean alterar(String emailPrincipal, Email email) throws Exception
     {
         if (email==null)
             throw new Exception ("Email nao fornecido");
@@ -191,12 +212,17 @@ public class Emails
         {
             String sql;
 
-            sql = "UPDATE EmailCadastrado SET outroEmail='"+email.getOutroEmail()+"', senha='"+email.getSenha()+"' WHERE emailPrincipal='"+emailPrincipal+"'";
+            sql = "UPDATE EmailCadastrado SET emailPrincipal='"+email.getEmailPrincipal()+"', outroEmail='"+email.getOutroEmail()+"', senha='"+email.getSenha()+"', servidor='"+email.getServidor()+"', porta='"+email.getPorta()+"' WHERE emailPrincipal='"+emailPrincipal+"'";
 
             DAOs.getBD().prepareStatement (sql);
 
             DAOs.getBD().executeUpdate ();
             DAOs.getBD().commit        ();
+            
+            if (cadastrado(email))
+                return true;
+            
+            return false;
         }
         catch (SQLException erro)
         {
@@ -204,7 +230,7 @@ public class Emails
         }
     }
     
-    public void alterar(String emailPrincipal, String novoEmailPrincipal) throws Exception
+    public boolean alterar(String emailPrincipal, String novoEmailPrincipal) throws Exception
     {
         if (!temEmailPrincipal(emailPrincipal))
             throw new Exception ("Nao cadastrado");
@@ -222,6 +248,12 @@ public class Emails
 
             DAOs.getBD().executeUpdate ();
             DAOs.getBD().commit        ();
+            
+            if (temEmailPrincipal(novoEmailPrincipal))
+                return true;
+            
+            return false;
+            
         }
         catch (SQLException erro)
         {
@@ -246,7 +278,7 @@ public class Emails
             if (!resultado.first())
                 throw new Exception ("Nao cadastrado");
 
-            email = new Email (resultado.getString("emailPrincipal"), resultado.getString("outroEmail"), resultado.getString("senha"));
+            email = new Email (resultado.getString("emailPrincipal"), resultado.getString("outroEmail"), resultado.getString("senha"), resultado.getString("servidor"), Integer.parseInt(resultado.getString("porta")));
         }
         catch (SQLException erro)
         {
@@ -256,9 +288,9 @@ public class Emails
         return email;
     }
 
-    public MeuResultSet getEmails () throws Exception
+    public List getEmails () throws Exception
     {
-        MeuResultSet resultado = null;
+        List<Email> lista = null;
 
         try
         {
@@ -268,13 +300,32 @@ public class Emails
 
             DAOs.getBD().prepareStatement (sql);
 
-            resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+            
+            if (resultado.first()){
+                Email linha = new Email();
+                linha.setEmailPrincipal(resultado.getString(1));
+                linha.setOutroEmail(resultado.getString(2));
+                linha.setSenha(resultado.getString(3));
+                linha.setServidor(resultado.getString(4));
+                linha.setPorta(Integer.parseInt(resultado.getString(5)));
+                lista.add(linha);
+                
+                while (resultado.next()){
+                    linha.setEmailPrincipal(resultado.getString(1));
+                    linha.setOutroEmail(resultado.getString(2));
+                    linha.setSenha(resultado.getString(3));
+                    linha.setServidor(resultado.getString(4));
+                    linha.setPorta(Integer.parseInt(resultado.getString(5)));
+                    lista.add(linha);
+                }
+            }
         }
         catch (SQLException erro)
         {
             throw new Exception ("Erro ao recuperar emails");
         }
 
-        return resultado;
+        return lista;
     }
 }

@@ -18,6 +18,11 @@ constraint fkEmailPrincipal foreign key (emailPrincipal) references UsuarioMalig
 
 drop table EmailCadastrado
 
+--porta int
+--servidor
+
+select * from EmailCadastrado
+
 
 
 

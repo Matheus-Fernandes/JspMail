@@ -1,6 +1,7 @@
 package com.jdbc;
 
 import java.sql.*;
+import java.util.List;
 
 public class Usuarios
 {
@@ -97,7 +98,7 @@ public class Usuarios
         }   
     }
 
-    public void excluir (String email) throws Exception
+    public boolean excluir (String email) throws Exception
     {
         if (!cadastradoEmail(email))
             throw new Exception ("Nao cadastrado");
@@ -111,14 +112,20 @@ public class Usuarios
             DAOs.getBD().prepareStatement (sql);
 
             DAOs.getBD().executeUpdate ();
-            DAOs.getBD().commit        ();        }
+            DAOs.getBD().commit        (); 
+            
+            if (cadastradoEmail(email))
+                return false;
+            
+            return true;
+        }
         catch (SQLException erro)
         {
             throw new Exception ("Erro ao excluir usuario");
         }
     }
 
-    public void alterar (String email, Usuario usuario) throws Exception
+    public boolean alterar (String email, Usuario usuario) throws Exception
     {
         if (usuario==null)
             throw new Exception ("Usuario nao fornecido");
@@ -136,6 +143,11 @@ public class Usuarios
 
             DAOs.getBD().executeUpdate ();
             DAOs.getBD().commit        ();
+            
+            if (cadastrado(usuario))
+                return true;
+            
+            return false;
         }
         catch (SQLException erro)
         {
@@ -143,33 +155,53 @@ public class Usuarios
         }
     }
     
-    public void alterar (String email, String senha, String emailNovo, boolean ehSenha) throws Exception // quando apenas altera o preço
+    public boolean alterarSenha (String email, String novaSenha) throws Exception // quando apenas altera o preço
+    {
+        if (!cadastradoEmail(email))
+            throw new Exception ("Nao cadastrado");
+
+        try
+        {            
+            String sql;
+
+            sql = "UPDATE UsuarioMaligno SET senha='"+novaSenha+"' WHERE email='"+email+"'";
+
+            DAOs.getBD().prepareStatement (sql);
+
+            DAOs.getBD().executeUpdate ();
+            DAOs.getBD().commit        ();
+            
+            if (cadastrado(email, novaSenha))
+               return true;
+            
+            return false;
+        }
+        catch (SQLException erro)
+        {
+            throw new Exception ("Erro ao atualizar dados de usuario");
+        }
+    }
+    
+    public boolean alterarEmail (String email, String emailNovo) throws Exception // quando apenas altera o preço
     {
         if (!cadastradoEmail(email))
             throw new Exception ("Nao cadastrado");
 
         try
         {
-            if (ehSenha){
-                String sql;
+            String sql;
 
-                sql = "UPDATE UsuarioMaligno SET senha='"+senha+"' WHERE email='"+email+"'";
+            sql = "UPDATE UsuarioMaligno SET email='"+emailNovo+"' WHERE email='"+email+"'";
 
-                DAOs.getBD().prepareStatement (sql);
+            DAOs.getBD().prepareStatement (sql);
 
-                DAOs.getBD().executeUpdate ();
-                DAOs.getBD().commit        ();
-            }
-            else{
-                String sql;
-
-                sql = "UPDATE UsuarioMaligno SET email='"+emailNovo+"' WHERE email='"+email+"'";
-
-                DAOs.getBD().prepareStatement (sql);
-
-                DAOs.getBD().executeUpdate ();
-                DAOs.getBD().commit        ();
-            }
+            DAOs.getBD().executeUpdate ();
+            DAOs.getBD().commit        ();
+            
+            if (cadastradoEmail(emailNovo))
+                return true;
+            
+            return false;
         }
         catch (SQLException erro)
         {
@@ -204,9 +236,9 @@ public class Usuarios
         return usuario;
     }
 
-    public MeuResultSet getUsuarios () throws Exception
+    public List getUsuarios () throws Exception
     {
-        MeuResultSet resultado = null;
+        List<Usuario> lista = null;
 
         try
         {
@@ -216,13 +248,26 @@ public class Usuarios
 
             DAOs.getBD().prepareStatement (sql);
 
-            resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+            
+            if (resultado.first()){
+                Usuario linha = new Usuario();
+                linha.setEmail(resultado.getString(1));
+                linha.setSenha(resultado.getString(2));
+                lista.add(linha);
+                
+                while (resultado.next()){
+                    linha.setEmail(resultado.getString(1));
+                    linha.setSenha(resultado.getString(2));
+                    lista.add(linha);
+                }
+            }
         }
         catch (SQLException erro)
         {
             throw new Exception ("Erro ao recuperar usuarios");
         }
 
-        return resultado;
+        return lista;
     }
 }
