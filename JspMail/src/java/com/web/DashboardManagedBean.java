@@ -22,6 +22,10 @@ public class DashboardManagedBean {
         mensagens.add(new Mensagem(email, "", "Conta de luz", ""));
         mensagens.add(new Mensagem(email, "", "Orçamento de gesso - resposta", ""));
         mensagens.add(new Mensagem(email, "", "Bom diaaaa", ""));
+        mensagens.add(new Mensagem(email, "", "Formulário de inscrição - DevCamp", ""));
+        mensagens.add(new Mensagem(email, "", "Parabéns, temos um presente pra você", ""));
+        mensagens.add(new Mensagem(email, "", "Conta de luz", ""));
+        mensagens.add(new Mensagem(email, "", "Orçamento de gesso - resposta", ""));
         
         return mensagens;
     }

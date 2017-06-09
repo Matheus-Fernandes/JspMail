@@ -10,6 +10,8 @@ idEmailCadastrado int not null identity,
 emailPrincipal varchar(100) not null,
 outroEmail varchar(100) not null,
 senha varchar(40) not null, 
+servidor varchar(50) not null,
+porta int not null,
 constraint pkIdEmailCadastrado primary key (idEmailCadastrado),
 constraint fkEmailPrincipal foreign key (emailPrincipal) references UsuarioMaligno
 )
@@ -42,7 +44,7 @@ delete from EmailCadastrado where emailPrincipal = 'emailPrincipal'
 
 
 --cadastrar email em conta
-insert into EmailCadastrado values (1, 'emailLogin', 'emailAdcionado')
+insert into EmailCadastrado values ('emailLogin', 'emailAdicionado', 'senha', 'pop.gmail.com', 995)
 
 --alterar email cadastrado na conta
 update EmailCadastrado set outroEmail = 'emailNovo' where emailPrincipal = 'emailPrincipal'
