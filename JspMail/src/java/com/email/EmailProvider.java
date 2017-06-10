@@ -16,6 +16,9 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailProvider 
@@ -29,6 +32,26 @@ public class EmailProvider
         this.currentEmail = email;
     }
     
+    public Session getSMTPSession()
+    {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", this.currentEmail.getServidorEnvio());
+        props.put("mail.smtp.port", this.currentEmail.getPortaEnvio()); //587
+
+        Session session = Session.getInstance(props,
+                    new javax.mail.Authenticator() {
+                        @Override
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(currentEmail.getOutroEmail(), currentEmail.getSenha());
+                        }
+                    });
+        
+        return session;        
+    }   
+    
+    
     public Store getStore()
     {
         try 
@@ -39,7 +62,7 @@ public class EmailProvider
 
             Session session = Session.getDefaultInstance(props, null);
             Store store = session.getStore("imaps");
-            store.connect("imap.gmail.com",  this.currentEmail.getOutroEmail(), this.currentEmail.getSenha());            
+            store.connect(this.currentEmail.getServidorRecebimento(),  this.currentEmail.getOutroEmail(), this.currentEmail.getSenha());            
             
             return store;
         } 
@@ -55,7 +78,7 @@ public class EmailProvider
         return null;
     }
     
-    public Message[] getAllMessages(Folder folder, int page, int amount)
+    public Message[] getMessagePage(Folder folder, int page, int amount)
     {
         Message[] messages = null;
         
@@ -68,7 +91,14 @@ public class EmailProvider
             }
             catch (Exception e)
             {
-                messages = folder.getMessages();                
+                try
+                {
+                    messages = folder.getMessages(page * amount + 1, folder.getMessageCount());       
+                }
+                catch (Exception f)
+                {
+                    f.printStackTrace(System.err);
+                }
             }
             
             return messages;          
@@ -81,18 +111,53 @@ public class EmailProvider
         return messages;
     }
     
-     public static void main(String[] args) {
+    public boolean sendMessage(Session session, String subject, String[] recipients, String content, DataSource attachment)
+    {
+        try 
+        {
+            InternetAddress[] addresses = new InternetAddress[recipients.length];
+            for (int i = 0; i < addresses.length; i++)            
+                addresses[i] = new InternetAddress(recipients[i]);            
+            
+            
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(this.currentEmail.getEmailPrincipal())); 
+            message.setSubject(subject);
+            message.setRecipients(Message.RecipientType.TO, addresses);
+            message.setText(content);
+            
+            Transport.send(message);
+            return true;
+        }         
+        catch (AddressException ex) 
+        {
+            Logger.getLogger(EmailProvider.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        catch (MessagingException ex) 
+        {
+            Logger.getLogger(EmailProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public static void main(String[] args) 
+    {
 
         try {
             Email email = new Email();
             email.setEmailPrincipal("aaa");    
             email.setOutroEmail("marcioteste28@gmail.com");
             email.setSenha("@@123123");
-            email.setServidorRecebimento("pop.gmail.com");
-            email.setPortaRecebimento(995);
-            EmailProvider provider = new EmailProvider(email);
-                       
+            email.setServidorRecebimento("imap.gmail.com");
+            email.setPortaRecebimento(993);
+            email.setServidorEnvio("smtp.gmail.com");
+            email.setPortaEnvio(587);
             
+            EmailProvider provider = new EmailProvider(email);
+            String[] rec = { "marcioazjunior@gmail.com" };
+            provider.sendMessage(provider.getSMTPSession(), "Assunto", rec, "Mensagem enviada pelo JavaMail", null);
+                       
+        /*    
             Store store = provider.getStore();
             Folder folder = store.getFolder("INBOX");
             
@@ -110,7 +175,7 @@ public class EmailProvider
 
             //close the store and folder objects
             folder.close(false);
-            store.close();
+            store.close();*/
         } catch (Exception ex) {
             Logger.getLogger(EmailProvider.class.getName()).log(Level.SEVERE, null, ex);
         }
