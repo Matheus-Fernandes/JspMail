@@ -82,10 +82,10 @@ body{
     <c:forEach varStatus="id" var="mensagem" items="${dashboard.getCaixaEntrada('matheus@gmail.com')}">
     <tr bgcolor="#${id.count % 2 == 0 ? '2c3e50' : 'eee' }" > 
         <td class = "td_assunto" style="color : #${id.count % 2 == 0 ? 'ffffff' : '000000' }">${mensagem.assunto}</td> 
-        <td  class = "td_botao"><button type="submit"  class="btn btn-default botao">Responder</button></td> 
+        <td  class = "td_botao"><button type="submit" value="responder" class="btn btn-default botao">Responder</button></td> 
         <td  class = "td_botao"><button type="submit"  class="btn btn-default botao">Encaminhar</button></td> 
     </tr> 
-</c:forEach>
+    </c:forEach>
 </tbody>
 <tfoot>
     <tr bgcolor="2980b9">

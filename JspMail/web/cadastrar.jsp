@@ -43,7 +43,6 @@
                 
                 <c:if test="${sessionScope.senhasIguais}">
 
-
                     <c:set scope="session" var="usuarioCadastrado" value="${usuarioDao.incluir(usuario)}"/>
 
                     <c:if test="${sessionScope.usuarioCadastrado}">

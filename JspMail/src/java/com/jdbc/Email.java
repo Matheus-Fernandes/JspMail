@@ -5,7 +5,13 @@ public class Email
 
     @Override
     public String toString() {
-        return "Email{" + "email principal=" + emailPrincipal + ", email" + outroEmail + ", senha=" + senha+  "}";
+        return "Email: { email principal="+this.emailPrincipal+", "
+                + "outro email="+this.outroEmail+", "
+                + "senha="+this.senha+", "
+                + "servidor de recebimento=" + this.servidorRecebimento+", "
+                + "porta de recebimento="+this.portaRecebimento+", "
+                + "servidor de envio="+this.servidorEnvio+", "
+                + "porta de envio="+this.portaEnvio+"}";
     }
     
     private String emailPrincipal;

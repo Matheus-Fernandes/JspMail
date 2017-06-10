@@ -1,6 +1,7 @@
 package com.jdbc;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Emails
@@ -296,7 +297,7 @@ public class Emails
 
     public List getEmails () throws Exception
     {
-        List<Email> lista = null;
+        List<Email> lista = new ArrayList<>();
 
         try
         {
@@ -308,8 +309,10 @@ public class Emails
 
             MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
             
-            if (resultado.first()){
-                Email linha = new Email();
+            Email linha;
+
+            while (resultado.next()){
+                linha = new Email();
                 linha.setEmailPrincipal(resultado.getString(2));
                 linha.setOutroEmail(resultado.getString(3));
                 linha.setSenha(resultado.getString(4));
@@ -318,17 +321,6 @@ public class Emails
                 linha.setServidorEnvio(resultado.getString(7));
                 linha.setPortaEnvio(Integer.parseInt(resultado.getString(8)));
                 lista.add(linha);
-                
-                while (resultado.next()){
-                    linha.setEmailPrincipal(resultado.getString(2));
-                    linha.setOutroEmail(resultado.getString(3));
-                    linha.setSenha(resultado.getString(4));
-                    linha.setServidorRecebimento(resultado.getString(5));
-                    linha.setPortaRecebimento(Integer.parseInt(resultado.getString(6)));
-                    linha.setServidorEnvio(resultado.getString(7));
-                    linha.setPortaEnvio(Integer.parseInt(resultado.getString(8)));
-                    lista.add(linha);
-                }
             }
         }
         catch (SQLException erro)
