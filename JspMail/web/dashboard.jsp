@@ -15,15 +15,30 @@ html{
 }
 body{
     height: 100%;
-    background-color: #2c3e50;
+    background-color: #eee;
 }
 
 .listaMensagens{
     float: right;
     position: absolute;
-    top: 44px;
+    top: 0px;
     right: 0;
-    width: 85%;
+    width: 88%;
+
+
+}
+.listaMensagens  a{
+    color: black;
+}
+
+
+.listaMensagens tfoot a{
+    color: whitesmoke;
+    margin-right: 20px;
+}
+
+.listaMensagens tbody, th, td {
+    border-bottom: 1px solid #eee;
 }
 
 
@@ -33,8 +48,13 @@ body{
    width: 90%;
 }
 
+.listaMensagens .td_assunto a{
+   margin-left: 5px;
+}
+
 .listaMensagens .td_botao{
    width: 5%;
+   padding-right: 10px;
 }
 
 .listaMensagens tbody{
@@ -42,9 +62,10 @@ body{
 }
 
 .vertical-menu {
-    width: 15%;
+    width: 12%;
     height: 100%;
     background-color: #eee;
+
 }
 
 .vertical-menu a {
@@ -78,28 +99,33 @@ body{
 
 <table class="listaMensagens">
 <!-- percorre contatos montando as linhas da tabela -->
-<tbody>
+<thead>
+    <tr bgcolor="2980b9" style="height:  43px">
+        <td></td><td></td><td></td>
+    </tr>
+</thead>
+<tbody >
     <c:forEach varStatus="id" var="mensagem" items="${dashboard.getCaixaEntrada('matheus@gmail.com')}">
-    <tr bgcolor="#${id.count % 2 == 0 ? '2c3e50' : 'eee' }" > 
-        <td class = "td_assunto" style="color : #${id.count % 2 == 0 ? 'ffffff' : '000000' }">${mensagem.assunto}</td> 
-        <td  class = "td_botao"><button type="submit" value="responder" class="btn btn-default botao">Responder</button></td> 
-        <td  class = "td_botao"><button type="submit"  class="btn btn-default botao">Encaminhar</button></td> 
+    <tr bgcolor="DADFE1" > 
+        <td class = "td_assunto"><a href="dashboard.jsp">${mensagem.assunto}</a></td> 
+        <td  class = "td_botao"><a href="dashboard.jsp">Responder </a></td> 
+        <td  class = "td_botao"><a href="dashboard.jsp">Encaminhar </a></td> 
     </tr> 
     </c:forEach>
 </tbody>
 <tfoot>
     <tr bgcolor="2980b9">
-        <td></td>
-        <td></td>
-        <td style="float: right">
+        <td style="border: 0"></td>
+        <td style="border: 0"></td>
+        <td style="float: right; border: 0">
 
-                <button  type="submit" style="margin:1px"  class="btn btn-toolbar">
+                <a href="dashboard.jsp">
                     <<
-                </button>
+                </a>
                 
-                <button type="submit" style="margin:1px" class="btn btn-toolbar">
+                <a href="dashboard.jsp">
                     >>
-                </button>
+                </a>
    
         </td> 
     </tr>
