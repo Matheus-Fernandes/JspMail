@@ -93,9 +93,29 @@ body{
 <jsp:useBean id="dashboard" scope="page" class="com.web.DashboardManagedBean"/>
 <div class="vertical-menu">
   <a href="#" class="active">Caixa de Entrada</a>
-  <a href="#">Emails Cadastrados</a>
-  <a href="#">Sair</a>
+  <a href="gerenciarEmails.jsp">Gerenciar Emails</a>
+  <a href="index.jsp?operation=sair">Sair</a>
 </div>
+
+<c:if test="${param.operation == 'verMensagem'}">
+    <c:set scope="session" var="mensagem" value="${dashboard.getMensagem(param.id)}"/>
+    <c:redirect url="verMensagem.jsp"/>
+</c:if>
+<c:if test="${param.operation == 'responderMensagem'}">
+    <c:set scope="session" var="mensagem" value="${dashboard.getMensagem(param.id)}"/>
+    <c:redirect url="responderMensagem.jsp"/>
+</c:if>
+<c:if test="${param.operation == 'encaminharMensagem'}">
+    <c:set scope="session" var="mensagem" value="${dashboard.getMensagem(param.id)}"/>
+    <c:redirect url="encaminharMensagem.jsp"/>
+</c:if>
+
+<c:if test="${empty param.pagina}">
+    <c:set scope="page" var="pagina" value="0"/>
+</c:if>
+<c:if test="${not empty param.pagina}">
+    <c:set scope="page" var="pagina" value="${param.pagina}"/>
+</c:if>
 
 <table class="listaMensagens">
 <!-- percorre contatos montando as linhas da tabela -->
@@ -105,28 +125,47 @@ body{
     </tr>
 </thead>
 <tbody >
-    <c:forEach varStatus="id" var="mensagem" items="${dashboard.getCaixaEntrada('matheus@gmail.com')}">
+    <c:forEach varStatus="id" var="mensagem" items="${dashboard.getCaixaEntrada('matheus@gmail.com', pageScope.pagina)}">
     <tr bgcolor="DADFE1" > 
-        <td class = "td_assunto"><a href="dashboard.jsp">${mensagem.assunto}</a></td> 
-        <td  class = "td_botao"><a href="dashboard.jsp">Responder </a></td> 
-        <td  class = "td_botao"><a href="dashboard.jsp">Encaminhar </a></td> 
+        <td class = "td_assunto"><a href="dashboard.jsp?operation=verMensagem&id=${mensagem.id}">${mensagem.assunto}</a></td> 
+        <td  class = "td_botao"><a href="dashboard.jsp?operation=responderMensagem&id=${mensagem.id}">Responder </a></td> 
+        <td  class = "td_botao"><a href="dashboard.jsp?operation=encaminharMensagem&id=${mensagem.id}">Encaminhar </a></td> 
     </tr> 
     </c:forEach>
 </tbody>
+
 <tfoot>
     <tr bgcolor="2980b9">
         <td style="border: 0"></td>
         <td style="border: 0"></td>
-        <td style="float: right; border: 0">
-
-                <a href="dashboard.jsp">
+        <td style="float: right; border: 0;"> 
+            <c:out value = "${dashboard.inicio(pageScope.pagina)} - ${dashboard.fim(pageScope.pagina)} de ${dashboard.countMensagens()}"/>
+            
+            <div style="margin-left: 10px">
+                <c:if test="${dashboard.paginaValida(pageScope.pagina - 1)}">
+                <a href="dashboard.jsp?pagina=${pageScope.pagina - 1}">
                     <<
                 </a>
-                
-                <a href="dashboard.jsp">
+                </c:if>
+
+                <c:if test="${!dashboard.paginaValida(pageScope.pagina - 1)}">
+                <a href="dashboard.jsp?pagina=${pageScope.pagina}">
+                    <<
+                </a>
+                </c:if>
+
+                <c:if test="${dashboard.paginaValida(pageScope.pagina + 1)}">
+                <a href="dashboard.jsp?pagina=${pageScope.pagina + 1}">
                     >>
                 </a>
-   
+                </c:if>  
+
+                <c:if test="${!dashboard.paginaValida(pageScope.pagina + 1)}">
+                <a href="dashboard.jsp?pagina=${pageScope.pagina}">
+                    >>
+                </a>
+                </c:if>  
+            </div>
         </td> 
     </tr>
 </tfoot>
