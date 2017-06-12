@@ -198,10 +198,10 @@ public class EmailProvider
             
             Store store = provider.getStore();
             Folder folder =  store.getFolder("INBOX");
-            Folder[] subFolders = store.getDefaultFolder().list("*");
+           // Folder[] subFolders = store.getDefaultFolder().list("*");
             
             
-            /*Message[] messages = provider.getMessagePage(folder, Folder.READ_WRITE, 1, DEFAULT_PAGE_SIZE);
+            Message[] messages = provider.getMessagePage(folder, Folder.READ_WRITE, 1, DEFAULT_PAGE_SIZE);
             
             for (int i = 0, n = messages.length; i < n; i++) {
                 Message message = messages[i];
@@ -211,12 +211,12 @@ public class EmailProvider
                 System.out.println("From: " + message.getFrom()[0]);
                 System.out.println("Text: " + ((Multipart) message.getContent()).getBodyPart(0).getContent());
 
-             }*/
+             }
             
             //provider.deleteMessage(messages[0], false);
 
             //close the store and folder objects
-            //folder.close(true);
+            folder.close(true);
             store.close();
         } catch (Exception ex) {
             Logger.getLogger(EmailProvider.class.getName()).log(Level.SEVERE, null, ex);

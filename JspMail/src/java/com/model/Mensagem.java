@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.mail.Address;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -102,8 +104,34 @@ public class Mensagem
     {
         try 
         {
-            Multipart mp = (Multipart) this.msg.getContent();
-            return (String) mp.getBodyPart(0).getContent();
+            String result = "";
+            Object content = this.msg.getContent();
+            boolean isHtml = false;
+            
+            if (content instanceof Multipart) 
+            {
+                Multipart mp = (Multipart) content;
+                for (int i = 0; i < mp.getCount(); i++) 
+                {
+                    BodyPart bp = mp.getBodyPart(i);
+                    
+                    if (Pattern
+                            .compile(Pattern.quote("text/html"), Pattern.CASE_INSENSITIVE)
+                            .matcher(bp.getContentType()).find()) 
+                    {
+
+                        result = (String) bp.getContent();
+                        isHtml = true;
+                    } 
+                    else 
+                    {
+                        if (!isHtml)
+                            result = (String) bp.getContent();
+                    }
+                }
+            }
+            
+            return result;
         } 
         catch (IOException ex) {
             Logger.getLogger(Mensagem.class.getName()).log(Level.SEVERE, null, ex);

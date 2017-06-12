@@ -19,6 +19,8 @@
         <c:if test = "${param.operation == 'logar'}">
             <c:set scope="session" var="isCadastrado" value="${usuarioDao.cadastrado(param.email, param.senha)}"/>
             <c:if test="${sessionScope.isCadastrado}">
+                <c:set scope="session" var="usuario" value="${param.email}"/>
+                ${sessionScope.usuario}
                 <jsp:forward page="dashboard.jsp"/>
             </c:if>
         </c:if>
