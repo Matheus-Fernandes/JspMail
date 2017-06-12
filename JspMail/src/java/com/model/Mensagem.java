@@ -5,8 +5,14 @@
  */
 package com.model;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -15,6 +21,7 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
@@ -98,6 +105,95 @@ public class Mensagem
         } catch (MessagingException ex) {
             Logger.getLogger(Mensagem.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public List<InputStream> getAttachments() throws Exception 
+    {
+        Object content = this.msg.getContent();
+        
+        if (content instanceof String)
+            return null;        
+
+        if (content instanceof Multipart) 
+        {
+            Multipart multipart = (Multipart) content;
+            List<InputStream> result = new ArrayList<InputStream>();
+
+            for (int i = 0; i < multipart.getCount(); i++)
+                result.addAll(getAttachments(multipart.getBodyPart(i)));
+            
+            return result;
+
+        }
+        return null;
+    }
+    
+    public List<String> getAttachmentsName() throws MessagingException, Exception
+    {
+        Object content = this.msg.getContent();
+        
+        if (content instanceof String)
+            return null;        
+
+        if (content instanceof Multipart) 
+        {
+            Multipart multipart = (Multipart) content;
+            List<String> result = new ArrayList<String>();
+
+            for (int i = 0; i < multipart.getCount(); i++)
+            {
+                Part part = multipart.getBodyPart(i);
+                String name = part.getFileName();
+                
+                if (name == null)
+                    continue;
+                
+                if (name.trim().isEmpty())
+                    continue;               
+                
+                result.add(name);                
+            }
+            
+            return result;
+        }
+        return null;
+    }
+
+    private List<InputStream> getAttachments(BodyPart part) throws Exception 
+    {
+        List<InputStream> result = new ArrayList<InputStream>();
+        Object content = part.getContent();
+        if (content instanceof InputStream || content instanceof String) 
+        {
+            boolean test = true;
+            
+            if (part.getFileName() == null)
+                test = false;
+            else    
+                if (part.getFileName().trim().isEmpty())
+                    test = false;
+            
+            if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition()) || test) 
+            {
+                result.add(part.getInputStream());
+                return result;
+            } 
+            else 
+            {
+                return new ArrayList<InputStream>();
+            }
+        }
+
+        if (content instanceof Multipart) 
+        {
+                Multipart multipart = (Multipart) content;
+                for (int i = 0; i < multipart.getCount(); i++) 
+                {
+                    BodyPart bodyPart = multipart.getBodyPart(i);
+                    result.addAll(getAttachments(bodyPart));
+                }
+        }
+        return result;
     }
 
     public String getConteudo() 

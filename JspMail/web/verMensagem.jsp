@@ -30,7 +30,15 @@
                 <div>Conteúdo: </div> 
                 <br>
                 <div class="content espaco"> <c:out value="${sessionScope.mensagem.getConteudo()}" escapeXml="false" /> </div>
-
+                <div>Anexos: </div> 
+                <br>
+                <div class="content espaco"> 
+                    <c:set var="anexosNome" scope="page" value="${sessionScope.mensagem.getAttachmentsName()}" /> 
+                    <c:set var="anexos" scope="page" value="${sessionScope.mensagem.getAttachments()}" />
+                    <c:forEach var="i" begin="0" end="${pageScope.anexosNome.size()}">
+                        <c:out value="${pageScope.anexosNome.get(i)}" />
+                    </c:forEach>
+                </div>
 
                 <button>Excluir Email</button>
             </div>

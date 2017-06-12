@@ -4,6 +4,10 @@ import com.email.exception.InvalidPageException;
 import javax.mail.Message;
 
 import com.jdbc.Email;
+import com.model.Mensagem;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -190,6 +194,7 @@ public class EmailProvider
             email.setPortaEnvio(587);
             
             EmailProvider provider = new EmailProvider(email);
+            
             /*
             String[] rec = { "marcioazjunior@gmail.com" };
             provider.sendMessage(provider.getSMTPSession(), "Assunto", rec, "Mensagem enviada pelo JavaMail", null);
@@ -203,6 +208,24 @@ public class EmailProvider
             
             Message[] messages = provider.getMessagePage(folder, Folder.READ_WRITE, 1, DEFAULT_PAGE_SIZE);
             
+            com.model.Mensagem msg = new Mensagem(1, messages[0]);
+            List<String> lista = msg.getAttachmentsName();
+            List<InputStream> arq = msg.getAttachments();
+            
+            for (int i = 0; i < lista.size(); i++)
+            {
+                InputStream is = arq.get(i);
+                File f = new File("/tmp/" + lista.get(i));
+                FileOutputStream fos = new FileOutputStream(f);
+                byte[] buf = new byte[4096];
+                int bytesRead;
+                while((bytesRead = is.read(buf))!=-1) {
+                    fos.write(buf, 0, bytesRead);
+                }
+                fos.close();
+            }               
+            
+            /*
             for (int i = 0, n = messages.length; i < n; i++) {
                 Message message = messages[i];
                 System.out.println("---------------------------------");
@@ -212,7 +235,7 @@ public class EmailProvider
                 System.out.println("Text: " + ((Multipart) message.getContent()).getBodyPart(0).getContent());
 
              }
-            
+            */
             //provider.deleteMessage(messages[0], false);
 
             //close the store and folder objects
