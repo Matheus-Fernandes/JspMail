@@ -93,6 +93,7 @@ body{
 <jsp:useBean id="dashboard" scope="page" class="com.web.DashboardManagedBean"/>
 <div class="vertical-menu">
   <a href="#" class="active">Caixa de Entrada</a>
+  <a href="enviarMensagem.jsp">Enviar Mensagem</a>
   <a href="gerenciarEmails.jsp">Gerenciar Emails</a>
   <a href="index.jsp?operation=sair">Sair</a>
 </div>
