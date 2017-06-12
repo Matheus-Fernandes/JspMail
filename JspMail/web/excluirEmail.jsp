@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib tagdir="/WEB-INF/tags/" prefix="m"%>
 <!Doctype html>
 <html>
 <style>
@@ -55,17 +56,17 @@ body{
     <c:if test = "${param.operation == 'voltar'}">
         <jsp:forward page="gerenciarEmails.jsp" />
     </c:if>
-    <c:if test = "${param.operation == 'excluirEmail'}">
-        ${email.setOutroEmail()} <!-- Email em que clicou -->
+    <c:if test = "${param.operation == 'excluir'}">
+        ${email.setOutroEmail(sessionScope.usuario)} <!-- Email em que clicou -->
 
-        <c:set scope="session" var="existe" value="${emailDao.temOutroEmail(email.outroEmail)}"/>
+        <c:set scope="session" var="existe" value="${emailDao.temOutroEmail(sessionScope.emailEditar)}"/>
 
         <c:if test="${!sessionScope.existe}">
             <c:set scope="session" var="aviso_texto" value="Esse email não está cadastrado!"/>
             <c:set scope="session" var="aviso_tipo" value="ERRO"/>
         </c:if>
         <c:if test="${sessionScope.existe}">
-            <c:set scope="session" var="emailExcluido" value="${emailDao.excluirOutroEmail(email.outroEmail)}"/>  <!-- Setar para o email logado -->
+            <c:set scope="session" var="emailExcluido" value="${emailDao.excluirOutroEmail(sessionScope.emailEditar)}"/>  <!-- Setar para o email logado -->
 
             <c:if test="${sessionScope.emailExcluido}">
                 <c:set scope="session" var="aviso_texto" value="Email excluído com sucesso!"/>
@@ -79,10 +80,10 @@ body{
     </c:if>
 
     <div class="panel panel-default container clearfix" style="width: 300px; padding: 30px">
-        <form method="get" action="cadastrarEmail.jsp">
+        <form method="get" action="excluirEmail.jsp">
 
         <div class="input-group-btn">
-            <button style="width: 60%" type="submit" name="operation" value = "cadastrar" class="btn btn-default">Excluir</button>
+            <button style="width: 60%" type="submit" name="operation" value = "excluir" class="btn btn-default">Excluir</button>
             <button style="width: 40%" type="submit" name="operation" value = "voltar" class="btn btn-default">Voltar</button>
 
         </div>

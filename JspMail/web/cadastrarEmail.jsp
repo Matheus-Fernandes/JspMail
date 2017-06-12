@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib tagdir="/WEB-INF/tags/" prefix="m"%>
 <!Doctype html>
 <html>
 <style>
@@ -56,7 +57,7 @@ body{
         <jsp:forward page="gerenciarEmails.jsp" />
     </c:if>
     <c:if test = "${param.operation == 'cadastrarEmail'}">
-        ${email.setEmailPrincipal()} <!-- Setar para o email logado -->
+        ${email.setEmailPrincipal(sessionScope.usuario)} <!-- Setar para o email logado -->
         ${email.setOutroEmail(param.email)}
         ${email.setSenha(param.senha)}
         ${email.setServidorRecebimento(param.servidorRecebimento)}
@@ -97,7 +98,7 @@ body{
         <br>
 
         <div class="input-group-btn">
-            <button style="width: 60%" type="submit" name="operation" value = "cadastrar" class="btn btn-default">Cadastrar</button>
+            <button style="width: 60%" type="submit" name="operation" value = "cadastrarEmail" class="btn btn-default">Cadastrar</button>
             <button style="width: 40%" type="submit" name="operation" value = "voltar" class="btn btn-default">Voltar</button>
 
         </div>

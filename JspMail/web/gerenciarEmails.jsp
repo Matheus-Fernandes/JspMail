@@ -49,13 +49,13 @@ body{
     <c:redirect url="cadastrarEmail.jsp" />
 </c:if>
 <c:if test = "${param.operation == 'editarEmail'}">
-    <c:set scope="session" var="isCadastrado" value="${emailDao.temOutroEmail(param.email)}"/>
+    <c:set scope="session" var="isCadastrado" value="${emailDao.temOutroEmail(emailEditar)}"/>
     <c:if test="${sessionScope.isCadastrado}">
         <jsp:forward page="editarEmail.jsp"/>
     </c:if>
 </c:if>
 <c:if test = "${param.operation == 'excluirEmail'}">
-    <c:set scope="session" var="isCadastrado" value="${emailDao.temOutroEmail(param.email)}"/>
+    <c:set scope="session" var="isCadastrado" value="${emailDao.temOutroEmail(emailEditar)}"/>
     <c:if test="${sessionScope.isCadastrado}">
         <jsp:forward page="excluirEmail.jsp"/>
     </c:if>
@@ -67,16 +67,21 @@ body{
   <a href="#">Sair</a>
 </div>
 
-<table border = "1">
-<!-- percorre emails montando as linhas da tabela -->
-<c:forEach var="email" items="${emailDao.emails}">
-    <tr> 
-        <td>${email.emailPrincipal}</td>
-        <td><button type="submit"  name="operation" value="editarEmail" class="btn btn-default">Editar</button></td> 
-        <td><button type="submit"  name="operation" value="excluirEmail" class="btn btn-default">Excluir</button></td> 
-    </tr> 
-</c:forEach>
-</table>
+<form action="gerenciarEmails.jsp">
+    <table border = "1">
+    <!-- percorre emails montando as linhas da tabela -->
+    <td><button type="submit"  name="operation" value="cadastrarEmail" class="btn btn-default">Cadastrar Email</button></td> 
+    <c:out value="${emailDao.setEmailP(sessionScope.usuario)}"/>
+    <c:forEach var="email" items="${emailDao.emails}">
+        <tr> 
+            <c:set scope="session" var="emailEditar" value="${email.outroEmail}"/>
+            <td>${email.outroEmail}</td>
+            <td><button type="submit"  name="operation" value="editarEmail" class="btn btn-default">Editar</button></td> 
+            <td><button type="submit"  name="operation" value="excluirEmail" class="btn btn-default">Excluir</button></td> 
+        </tr> 
+    </c:forEach>
+    </table>
+</form>
 
 </body>
 </html>

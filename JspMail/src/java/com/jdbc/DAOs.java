@@ -13,7 +13,7 @@ public class DAOs
         {
             DAOs.bd = new MeuPreparedStatement (
                       "com.microsoft.sqlserver.jdbc.SQLServerDriver",
-                      "jdbc:sqlserver://DESKTOP-ECUKFEK:1433;databasename=BD15173", // XX eh seu RA
+                      "jdbc:sqlserver://regulus:1433;databasename=BD15173", // XX eh seu RA
                       "BD15173", "BD15173");
             
 //            DAOs.bd = new MeuPreparedStatement (
