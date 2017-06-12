@@ -91,6 +91,8 @@ body{
 
 <body>
 <jsp:useBean id="dashboard" scope="page" class="com.web.DashboardManagedBean"/>
+<jsp:useBean id="emails" scope="page" class="com.jdbc.Emails" />
+${dashboard.setEmail(emails.getEmail("email"))}
 <div class="vertical-menu">
   <a href="#" class="active">Caixa de Entrada</a>
   <a href="gerenciarEmails.jsp">Gerenciar Emails</a>
@@ -111,7 +113,7 @@ body{
 </c:if>
 
 <c:if test="${empty param.pagina}">
-    <c:set scope="page" var="pagina" value="0"/>
+    <c:set scope="page" var="pagina" value="1"/>
 </c:if>
 <c:if test="${not empty param.pagina}">
     <c:set scope="page" var="pagina" value="${param.pagina}"/>
@@ -125,7 +127,7 @@ body{
     </tr>
 </thead>
 <tbody >
-    <c:forEach varStatus="id" var="mensagem" items="${dashboard.getCaixaEntrada('matheus@gmail.com', pageScope.pagina)}">
+    <c:forEach varStatus="id" var="mensagem" items="${dashboard.getCaixaEntrada(pageScope.pagina)}">
     <tr bgcolor="DADFE1" > 
         <td class = "td_assunto"><a href="dashboard.jsp?operation=verMensagem&id=${mensagem.id}">${mensagem.assunto}</a></td> 
         <td  class = "td_botao"><a href="dashboard.jsp?operation=responderMensagem&id=${mensagem.id}">Responder </a></td> 
