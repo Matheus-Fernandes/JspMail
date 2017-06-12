@@ -10,13 +10,15 @@ package com.model;
  * @author Matheus
  */
 public class Mensagem {
+    public int id;
     public String destinatario;
     public String remetente;
     
     public String assunto;
     public String conteudo;
 
-    public Mensagem(String destinatario, String remetente, String assunto, String conteudo) {
+    public Mensagem(int id, String destinatario, String remetente, String assunto, String conteudo) {
+        this.id = id;
         this.destinatario = destinatario;
         this.remetente = remetente;
         this.assunto = assunto;
@@ -25,6 +27,16 @@ public class Mensagem {
     
     public Mensagem() {
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    
     
     public String getDestinatario() {
         return destinatario;
@@ -56,6 +68,11 @@ public class Mensagem {
 
     public void setConteudo(String conteudo) {
         this.conteudo = conteudo;
+    }
+
+    @Override
+    public String toString() {
+        return "Mensagem{" + "id=" + id + ", destinatario=" + destinatario + ", remetente=" + remetente + ", assunto=" + assunto + ", conteudo=" + conteudo + '}';
     }
     
     
