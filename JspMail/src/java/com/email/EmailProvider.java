@@ -80,6 +80,11 @@ public class EmailProvider
         return null;
     }
     
+    public int getMessageCount(Folder folder) throws MessagingException
+    {
+        return folder.getMessageCount();
+    }
+      
     public Message[] getMessagePage(Folder folder, int readMode, int page, int pageSize) throws InvalidPageException
     {
         Message[] messages = null;
@@ -89,7 +94,9 @@ public class EmailProvider
         
         try 
         {
-            folder.open(readMode);
+            if (folder.isOpen() == false)
+                folder.open(readMode);
+            
             int total = folder.getMessageCount();           
 
             if (total == 0)
