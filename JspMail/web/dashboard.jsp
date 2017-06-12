@@ -84,7 +84,7 @@ body{
 .vertical-menu a.active {
     background-color: #2980b9;
     color: white;
-
+}
 
 </style>
 </head>
@@ -95,6 +95,7 @@ body{
 ${dashboard.setEmail(emails.getEmail("email"))}
 <div class="vertical-menu">
   <a href="#" class="active">Caixa de Entrada</a>
+  <a href="enviarMensagem.jsp">Enviar Mensagem</a>
   <a href="gerenciarEmails.jsp">Gerenciar Emails</a>
   <a href="index.jsp?operation=sair">Sair</a>
 </div>

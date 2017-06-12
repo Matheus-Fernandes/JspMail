@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Emails
 {
+    public String emailP = "";
+    public Emails(){}
     public boolean cadastrado (String emailPrincipal, String outroEmail) throws Exception
     {
         boolean retorno = false;
@@ -75,7 +77,7 @@ public class Emails
     	return retorno;
     }
     
-    public boolean temOutroEmail (String email) throws Exception
+    public boolean temOutroEmail(String email) throws Exception
     {
         boolean retorno = false;
         
@@ -213,7 +215,7 @@ public class Emails
         {
             String sql;
 
-            sql = "UPDATE EmailCadastrado SET emailPrincipal='"+email.getEmailPrincipal()+"', outroEmail='"+email.getOutroEmail()+"', senha='"+email.getSenha()+"', servidorRecebimento='"+email.getServidorRecebimento()+"', portaRecebimento='"+email.getPortaRecebimento()+"', servidorEnvio='"+email.getServidorEnvio()+"', portaEnvio='"+email.getPortaEnvio()+"' WHERE emailPrincipal='"+emailPrincipal+"'";
+            sql = "UPDATE EmailCadastrado SET senha='"+email.getSenha()+"', servidorRecebimento='"+email.getServidorRecebimento()+"', portaRecebimento="+email.getPortaRecebimento()+", servidorEnvio='"+email.getServidorEnvio()+"', portaEnvio="+email.getPortaEnvio()+" WHERE emailPrincipal='"+emailPrincipal+"' AND outroEmail='"+email.getOutroEmail()+"'";
 
             DAOs.getBD().prepareStatement (sql);
 
@@ -230,39 +232,8 @@ public class Emails
             throw new Exception ("Erro ao atualizar dados de email");
         }
     }
-    
-    public boolean alterar(String emailPrincipal, String novoEmailPrincipal) throws Exception
-    {
-        if (!temEmailPrincipal(emailPrincipal))
-            throw new Exception ("Nao cadastrado");
-        
-        if (temEmailPrincipal(novoEmailPrincipal))
-            throw new Exception ("Email Principal já cadastrado");
 
-        try
-        {
-            String sql;
-
-            sql = "UPDATE EmailCadastrado SET emailPrincipal='"+novoEmailPrincipal+"' WHERE emailPrincipal='"+emailPrincipal+"'";
-
-            DAOs.getBD().prepareStatement (sql);
-
-            DAOs.getBD().executeUpdate ();
-            DAOs.getBD().commit        ();
-            
-            if (temEmailPrincipal(novoEmailPrincipal))
-                return true;
-            
-            return false;
-            
-        }
-        catch (SQLException erro)
-        {
-            throw new Exception ("Erro ao atualizar dados de email");
-        }
-    }
-
-    public Email getEmail (String emailPrincipal) throws Exception
+    public Email getEmailPrincipal (String emailPrincipal) throws Exception
     {
         Email email = null;
 
@@ -294,8 +265,41 @@ public class Emails
 
         return email;
     }
+    
+    public Email getOutroEmail (String outroEmail) throws Exception
+    {
+        Email email = null;
 
-    public List getEmails () throws Exception
+        try
+        {
+            String sql;
+
+            sql = "SELECT * FROM EmailCadastrado WHERE outroEmail ='"+outroEmail+"'";
+
+            DAOs.getBD().prepareStatement (sql);
+
+            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+
+            if (!resultado.first())
+                throw new Exception ("Nao cadastrado");
+
+            email = new Email (resultado.getString("emailPrincipal"), 
+                               resultado.getString("outroEmail"), 
+                               resultado.getString("senha"), 
+                               resultado.getString("servidorRecebimento"), 
+                               Integer.parseInt(resultado.getString("portaRecebimento")), 
+                               resultado.getString("servidorEnvio"), 
+                               Integer.parseInt(resultado.getString("portaEnvio")));
+        }
+        catch (SQLException erro)
+        {
+            throw new Exception ("Erro ao procurar email");
+        }
+
+        return email;
+    }
+
+    /*public List getEmails () throws Exception
     {
         List<Email> lista = new ArrayList<>();
 
@@ -329,5 +333,45 @@ public class Emails
         }
 
         return lista;
+    }*/
+    
+    public void setEmailP(String eP){
+        this.emailP = eP;
+    }
+    
+    public List<Email> getEmails() throws Exception
+    {
+        List<Email> listinha = new ArrayList<>();
+
+        try
+        {
+            String sql;
+
+            sql = "SELECT * FROM EmailCadastrado WHERE emailPrincipal='"+emailP+"' AND outroEmail<>'"+emailP+"'";
+
+            DAOs.getBD().prepareStatement (sql);
+
+            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+            
+            Email linha;
+
+            while (resultado.next()){
+                linha = new Email();
+                linha.setEmailPrincipal(resultado.getString(2));
+                linha.setOutroEmail(resultado.getString(3));
+                linha.setSenha(resultado.getString(4));
+                linha.setServidorRecebimento(resultado.getString(5));
+                linha.setPortaRecebimento(Integer.parseInt(resultado.getString(6)));
+                linha.setServidorEnvio(resultado.getString(7));
+                linha.setPortaEnvio(Integer.parseInt(resultado.getString(8)));
+                listinha.add(linha);
+            }
+        }
+        catch (SQLException erro)
+        {
+            throw new Exception ("Erro ao recuperar emails");
+        }
+
+        return listinha;
     }
 }

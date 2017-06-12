@@ -4,10 +4,11 @@
 <%@attribute name="nome"%>
 <%@attribute name="label"%>
 <%@attribute name="tipo" %>
+<%@attribute name="value" %>
 
 <%-- any content can be specified here e.g.: --%>
 <div class="form-group">
     <label for="${nome}">${label}</label>
     <input type="${tipo}" class="form-control" 
-           id="${nome}" name="${nome}" value="">
+           id="${nome}" name="${nome}" value="${value}">
 </div>

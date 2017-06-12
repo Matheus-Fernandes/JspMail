@@ -34,6 +34,8 @@ insert into EmailCadastrado values ('emailLogin', 'emailAdicionado', 'senha')
 update UsuarioMaligno set email = 'emailNovo' where email = 'email'
 update EmailCadastrado set emailPrincipal = 'emailPrincipalNovo' where emailPrincipal = 'emailPrincipal'
 
+UPDATE EmailCadastrado SET emailPrincipal='emailMalignoo', outroEmail='ju@gmail.com', senha='ju', servidorRecebimento='pop.gmail.com', portaRecebimento=990, servidorEnvio='smtp.gmail.com', portaEnvio='465' WHERE emailPrincipal='emailMalignoo' AND email
+
 --alterar senha do usuario
 update UsuarioMaligno set senha = 'senhaNova' where email = 'emailAtual'
 
@@ -44,8 +46,8 @@ select * from UsuarioMaligno
 select email from UsuarioMaligno where email = 'email' and senha = 'senha'
 
 --deletar conta de usuario
-delete from UsuarioMaligno where email = 'email' and senha = 'senha'
-delete from EmailCadastrado where emailPrincipal = 'emailPrincipal'
+delete from UsuarioMaligno where email = 'emailMalignoo' and senha = 'senha'
+delete from EmailCadastrado where emailPrincipal = 'emailMalignoo'
 
 
 --cadastrar email em conta
