@@ -5,70 +5,77 @@
  */
 package com.web;
 
+import com.email.EmailProvider;
+import com.email.exception.InvalidPageException;
 import com.model.Mensagem;
+import com.jdbc.Email;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Store;
 
 /**
  *
  * @author Matheus
  */
-public class DashboardManagedBean {
-    private List<Mensagem> mensagens;
-    private final int MENSAGENS_PAGINA = 19;
+public class DashboardManagedBean 
+{
+    private Store store;
+    private Folder folder;
+    private Mensagem[] mensagens;
+    private EmailProvider ep;
+    private final int MENSAGENS_PAGINA = 20;
     
-    public DashboardManagedBean(){
-        mensagens = new ArrayList<>();
-        
-        mensagens.add(new Mensagem(1, "email", "", "Formulário de inscrição - DevCamp", "Olá, por favor confirme a inscrição em www.devcamp.com.br"));
-        mensagens.add(new Mensagem(2, "email", "", "Parabéns, temos um presente pra você", ""));
-        mensagens.add(new Mensagem(3, "email", "", "Conta de luz", ""));
-        mensagens.add(new Mensagem(4, "email", "", "Orçamento de gesso - resposta", ""));
-        mensagens.add(new Mensagem(5, "email", "", "Bom diaaaa", ""));
-        mensagens.add(new Mensagem(6, "email", "", "Formulário de inscrição - DevCamp", ""));
-        mensagens.add(new Mensagem(7, "email", "", "Parabéns, temos um presente pra você", ""));
-        mensagens.add(new Mensagem(8, "email", "", "Conta de luz", ""));
-        mensagens.add(new Mensagem(9, "email", "", "Orçamento de gesso - resposta", ""));
-        mensagens.add(new Mensagem(10, "email", "", "Parabéns, temos um presente pra você", ""));
-        mensagens.add(new Mensagem(11, "email", "", "Conta de luz", ""));
-        mensagens.add(new Mensagem(12, "email", "", "Orçamento de gesso - resposta", ""));
-        mensagens.add(new Mensagem(13, "email", "", "Bom diaaaa", ""));
-        mensagens.add(new Mensagem(14, "email", "", "Formulário de inscrição - DevCamp", ""));
-        mensagens.add(new Mensagem(15, "email", "", "Parabéns, temos um presente pra você", ""));
-        mensagens.add(new Mensagem(16, "email", "", "Conta de luz", ""));
-        mensagens.add(new Mensagem(17, "email", "", "Orçamento de gesso - resposta", ""));
-        mensagens.add(new Mensagem(18, "email", "", "Parabéns, temos um presente pra você", ""));
-        mensagens.add(new Mensagem(19, "email", "", "Conta de luz", ""));
-        mensagens.add(new Mensagem(20, "email", "", "Orçamento de gesso - resposta", ""));
-        mensagens.add(new Mensagem(21, "email", "", "Parabéns, temos um presente pra você", ""));
-        mensagens.add(new Mensagem(22, "email", "", "Conta de luz", ""));
-        mensagens.add(new Mensagem(23, "email", "", "Orçamento de gesso - resposta", ""));
-        mensagens.add(new Mensagem(24, "email", "", "Bom diaaaa", ""));
-        mensagens.add(new Mensagem(25, "email", "", "Formulário de inscrição - DevCamp", ""));
-        mensagens.add(new Mensagem(26, "email", "", "Parabéns, temos um presente pra você", ""));
-        mensagens.add(new Mensagem(27, "email", "", "Conta de luz", ""));
-        mensagens.add(new Mensagem(28, "email", "", "Orçamento de gesso - resposta", ""));
-    }
-    public List<Mensagem> getCaixaEntrada(String email){
-        return this.mensagens;
-    }
-    
-    public List<Mensagem> getCaixaEntrada(String email, int pagina){
-        List<Mensagem> retorno = new ArrayList<Mensagem>();
-        
-        if (pagina < 0)
-            return retorno;
-        
-        int inicio = pagina * MENSAGENS_PAGINA;
-        int fim = inicio + MENSAGENS_PAGINA;
-        if (fim > mensagens.size())
-            fim = mensagens.size();
-        
-        for (int i = inicio; i < fim; i++){
-            retorno.add(this.mensagens.get(i));
+    public void setEmail(Email email)
+    {
+        try 
+        {
+            if (this.store != null)
+                this.store.close();
+            
+            if (this.folder != null)
+                this.folder.close(true);
+            
+            this.ep = new EmailProvider(email);
+            this.store = this.ep.getStore();
+            this.folder = this.store.getFolder("INBOX");
+            this.getCaixaEntrada(1);
+        } 
+        catch (MessagingException ex) 
+        {
+            Logger.getLogger(DashboardManagedBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public DashboardManagedBean()
+    {
         
-        return retorno;
+    }
+    
+    public Mensagem[] getCaixaEntrada(int pagina)
+    {    
+        Mensagem[] ret = null;
+        
+        try 
+        {
+            Message[] msg = this.ep.getMessagePage(this.folder, Folder.READ_WRITE, pagina, MENSAGENS_PAGINA);   
+            ret = new Mensagem[msg.length];
+            
+            for (int i = 0; i < ret.length; i++)
+                ret[i] = new Mensagem(pagina * MENSAGENS_PAGINA + i + 1, msg[i]);
+            
+            this.mensagens = ret;
+        } 
+        catch (InvalidPageException ex) 
+        {
+            Logger.getLogger(DashboardManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+ 
+        return ret;
     }
     
     public Mensagem getMensagem(int id){
@@ -81,20 +88,20 @@ public class DashboardManagedBean {
     }
     
     public int countMensagens(){
-        return mensagens.size();
+        return mensagens.length;
     }
     
     public boolean paginaValida(int pagina){
         int inicio = pagina * MENSAGENS_PAGINA + 1;
         
-        return pagina >= 0 && inicio <= mensagens.size();
+        return pagina >= 0 && inicio <= mensagens.length;
     }
     
     public int inicio(int pagina){
         int inicio = pagina * MENSAGENS_PAGINA + 1;
         
-        if (inicio > mensagens.size())
-            return mensagens.size();
+        if (inicio > mensagens.length)
+            return mensagens.length;
         
         return inicio;
     }
@@ -102,8 +109,8 @@ public class DashboardManagedBean {
     public int fim (int pagina){
         int fim = inicio(pagina) + MENSAGENS_PAGINA - 1;;
         
-        if (fim > mensagens.size())
-            return mensagens.size();
+        if (fim > mensagens.length)
+            return mensagens.length;
         
         return fim;
     }
