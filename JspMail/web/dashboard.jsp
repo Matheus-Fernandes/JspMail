@@ -84,7 +84,7 @@ body{
 .vertical-menu a.active {
     background-color: #2980b9;
     color: white;
-
+}
 
 </style>
 </head>
