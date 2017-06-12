@@ -1,14 +1,17 @@
 package com.email;
 
+import com.email.exception.InvalidPageException;
 import javax.mail.Message;
 
 import com.jdbc.Email;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -49,8 +52,7 @@ public class EmailProvider
                     });
         
         return session;        
-    }   
-    
+    }       
     
     public Store getStore()
     {
@@ -78,30 +80,39 @@ public class EmailProvider
         return null;
     }
     
-    public Message[] getMessagePage(Folder folder, int page, int amount)
+    public Message[] getMessagePage(Folder folder, int readMode, int page, int pageSize) throws InvalidPageException
     {
         Message[] messages = null;
         
+        if (page <= 0)
+            throw new InvalidPageException(page);
+        
         try 
         {
-            folder.open(Folder.READ_ONLY);
-            try 
-            {
-                messages = folder.getMessages(page * amount + 1, (page + 1) * amount);
-            }
-            catch (Exception e)
-            {
-                try
-                {
-                    messages = folder.getMessages(page * amount + 1, folder.getMessageCount());       
-                }
-                catch (Exception f)
-                {
-                    f.printStackTrace(System.err);
-                }
-            }
+            folder.open(readMode);
+            int total = folder.getMessageCount();           
+
+            if (total == 0)
+                return new Message[0];                       
             
-            return messages;          
+            if (total < (page - 1) * pageSize)
+                throw new InvalidPageException(page);
+            
+
+            Message[] toGet;
+            
+            if (total > pageSize)
+                toGet = new Message[pageSize];            
+            else 
+                toGet = new Message[total];
+            
+            messages = folder.getMessages();
+            
+            int start = total - ((page - 1) * pageSize) - 1;            
+            for (int i = 0; i < toGet.length; ++i)            
+                toGet[i] = messages[start - i];
+            
+            return toGet;          
         } 
         catch (MessagingException ex) 
         {
@@ -111,6 +122,25 @@ public class EmailProvider
         return messages;
     }
     
+    public boolean deleteMessage(Message message, boolean autoClose)
+    {
+        try 
+        {
+            message.setFlag(Flags.Flag.DELETED, true);
+            
+            if (autoClose)
+                message.getFolder().close(true);
+            
+            return true;
+        } 
+        catch (MessagingException ex) 
+        {
+            Logger.getLogger(EmailProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+    
     public boolean sendMessage(Session session, String subject, String[] recipients, String content, DataSource attachment)
     {
         try 
@@ -118,8 +148,7 @@ public class EmailProvider
             InternetAddress[] addresses = new InternetAddress[recipients.length];
             for (int i = 0; i < addresses.length; i++)            
                 addresses[i] = new InternetAddress(recipients[i]);            
-            
-            
+                        
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(this.currentEmail.getEmailPrincipal())); 
             message.setSubject(subject);
@@ -154,14 +183,18 @@ public class EmailProvider
             email.setPortaEnvio(587);
             
             EmailProvider provider = new EmailProvider(email);
+            /*
             String[] rec = { "marcioazjunior@gmail.com" };
             provider.sendMessage(provider.getSMTPSession(), "Assunto", rec, "Mensagem enviada pelo JavaMail", null);
+            */
                        
-        /*    
-            Store store = provider.getStore();
-            Folder folder = store.getFolder("INBOX");
             
-            Message[] messages = provider.getAllMessages(folder, 0, DEFAULT_PAGE_SIZE);
+            Store store = provider.getStore();
+            Folder folder =  store.getFolder("INBOX");
+            Folder[] subFolders = store.getDefaultFolder().list("*");
+            
+            
+            /*Message[] messages = provider.getMessagePage(folder, Folder.READ_WRITE, 1, DEFAULT_PAGE_SIZE);
             
             for (int i = 0, n = messages.length; i < n; i++) {
                 Message message = messages[i];
@@ -171,11 +204,13 @@ public class EmailProvider
                 System.out.println("From: " + message.getFrom()[0]);
                 System.out.println("Text: " + ((Multipart) message.getContent()).getBodyPart(0).getContent());
 
-             }
+             }*/
+            
+            //provider.deleteMessage(messages[0], false);
 
             //close the store and folder objects
-            folder.close(false);
-            store.close();*/
+            //folder.close(true);
+            store.close();
         } catch (Exception ex) {
             Logger.getLogger(EmailProvider.class.getName()).log(Level.SEVERE, null, ex);
         }
