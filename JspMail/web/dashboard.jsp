@@ -92,7 +92,7 @@ body{
 <body>
 <jsp:useBean id="dashboard" scope="page" class="com.web.DashboardManagedBean"/>
 <jsp:useBean id="emails" scope="page" class="com.jdbc.Emails" />
-${dashboard.setEmail(emails.getEmail("email"))}
+${dashboard.setEmail(emails.getEmailPrincipal("email"))}
 <div class="vertical-menu">
   <a href="#" class="active">Caixa de Entrada</a>
   <a href="enviarMensagem.jsp">Enviar Mensagem</a>
