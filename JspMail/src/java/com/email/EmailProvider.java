@@ -152,10 +152,12 @@ public class EmailProvider
         return false;
     }
     
-    public boolean sendMessage(Session session, String subject, String[] recipients, String content, DataSource attachment)
+    public boolean sendMessage(String subject, String[] recipients, String content, DataSource attachment)
     {
         try 
         {
+            Session session = this.getSMTPSession();
+            
             InternetAddress[] addresses = new InternetAddress[recipients.length];
             for (int i = 0; i < addresses.length; i++)            
                 addresses[i] = new InternetAddress(recipients[i]);            
