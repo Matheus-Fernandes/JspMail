@@ -12,6 +12,8 @@
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
         
         <jsp:useBean id="usuarioDao" scope="page" class="com.jdbc.Usuarios"/>
+        <jsp:useBean id="emails" scope="page" class="com.jdbc.Emails"/>
+        
 
         <c:if test = "${param.operation == 'cadastrar'}">
             <c:redirect url="cadastrar.jsp" />
@@ -20,6 +22,7 @@
             <c:set scope="session" var="isCadastrado" value="${usuarioDao.cadastrado(param.email, param.senha)}"/>
             <c:if test="${sessionScope.isCadastrado}">
                 <c:set scope="session" var="usuario" value="${param.email}"/>
+                <c:set scope="session" var="userEmail" value="${emails.getEmailPrincipal(sessionScope.usuario)}" />
                 ${sessionScope.usuario}
                 <jsp:forward page="dashboard.jsp"/>
             </c:if>

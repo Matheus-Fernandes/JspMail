@@ -5,6 +5,7 @@
  */
 package com.model;
 
+import com.sun.mail.imap.IMAPMessage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,6 +34,11 @@ public class Mensagem
 {
     public int id;
     private Message msg;
+    
+    public Mensagem()
+    {
+        
+    }
     
     public Mensagem(int id, Message msg)
     {

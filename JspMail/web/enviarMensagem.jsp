@@ -1,5 +1,5 @@
 <%@taglib tagdir="/WEB-INF/tags/" prefix="m"%>
-<%@taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -62,12 +62,13 @@ body{
 </style>    
 </head>
 <body>
-    <jsp:useBean id="mensagem" scope="page" class="com.model.Mensagem"/>
+    <jsp:useBean id="managed" scope="page" class="com.web.EnviarMensagemManagedBean" />
     <jsp:useBean id="provider" scope="page" class="com.email.EmailProvider"/>
+    <jsp:useBean id="emails" scope="page" class="com.jdbc.Emails"/>
+    ${provider.setEmail(emails.getEmailPrincipal(sessionScope.usuario))}
+    
     <c:if test="${param.operation == 'enviar'}">
-        ${mensagem.setAssunto(param.assunto)}
-        ${mensagem.setConteudo(param.texto)}
-        <c:set scope="page" var="mensagemEnviada" value="${provider.sendMessage()}"/><%-- params de sendMessage--%>
+        <c:set scope="page" var="mensagemEnviada" value="${provider.sendMessage(param.assunto, managed.gerarVetorDestinatario(param.destinatario), param.conteudo, null)}"/><%-- params de sendMessage--%>
         <c:if test="${pageScope.mensagemEnviada}">
             <c:set scope="session" var="aviso_texto" value="Email enviado com sucesso!"/>
             <c:set scope="session" var="aviso_tipo" value="SUCESSO"/>

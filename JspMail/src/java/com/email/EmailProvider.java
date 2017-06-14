@@ -26,13 +26,25 @@ import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class EmailProvider 
 {        
     private Email currentEmail;
     
     private static final int DEFAULT_PAGE_SIZE = 10;
+    
+    public EmailProvider()
+    {
+        
+    }
+    
+    public void setEmail(Email email)
+    {
+        this.currentEmail = email;
+    }
     
     public EmailProvider(Email email)
     {
@@ -166,7 +178,16 @@ public class EmailProvider
             message.setFrom(new InternetAddress(this.currentEmail.getEmailPrincipal())); 
             message.setSubject(subject);
             message.setRecipients(Message.RecipientType.TO, addresses);
-            message.setText(content);
+            
+            Multipart mp = new MimeMultipart();
+            
+            MimeBodyPart bodypart = new MimeBodyPart();
+            bodypart.setText(content, "utf-8");            
+    
+
+            mp.addBodyPart(bodypart);
+            message.setContent(mp);
+            
             
             Transport.send(message);
             return true;
