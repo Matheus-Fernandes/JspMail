@@ -62,6 +62,22 @@ body{
 </style>    
 </head>
 <body>
+    <jsp:useBean id="mensagem" scope="page" class="com.model.Mensagem"/>
+    <jsp:useBean id="provider" scope="page" class="com.email.EmailProvider"/>
+    <c:if test="${param.operation == 'enviar'}">
+        ${mensagem.setAssunto(param.assunto)}
+        ${mensagem.setConteudo(param.texto)}
+        <c:set scope="page" var="mensagemEnviada" value="${provider.sendMessage()}"/><%-- params de sendMessage--%>
+        <c:if test="${pageScope.mensagemEnviada}">
+            <c:set scope="session" var="aviso_texto" value="Email enviado com sucesso!"/>
+            <c:set scope="session" var="aviso_tipo" value="SUCESSO"/>
+        </c:if>
+        <c:if test="${!pageScope.mensagemEnviada}">
+            <c:set scope="session" var="aviso_texto" value="Falha no envio da mensagem."/>
+            <c:set scope="session" var="aviso_tipo" value="ERRO"/>  
+        </c:if>
+    </c:if>
+        
     <div class="vertical-menu">
         <a href="dashboard.jsp" class="active">Caixa de Entrada</a>
         <a href="enviarMensagem.jsp">Enviar Mensagem</a>
@@ -69,20 +85,22 @@ body{
         <a href="index.jsp?operation=sair">Sair</a>
     </div>
         
-    <div class = "corpo">
-        <m:campo label="Destinatário" nome="destinatario" tipo="text"/>
-        <m:campo label="Assunto" nome="destinatario" tipo="text"/>
-        
-        <div class="form-group">
-            <label for="texto"></label>
-            <textarea class="form-control" 
-                      id="texto" name="texto" rows="20"></textarea>
-        </div>
+    <form action="enviarMensagem.jsp">
+        <div class = "corpo">
+            <m:campo label="Destinatário" nome="destinatario" tipo="text"/>
+            <m:campo label="Assunto" nome="assunto" tipo="text"/>
 
-        <div class="btn-group  botoes">
-            <button type="submit" style="float: right; width: 100%" name="operation" value = "cadastrar" class="btn btn-default">Enviar</button>
+            <div class="form-group">
+                <label for="texto"></label>
+                <textarea class="form-control" 
+                          id="texto" name="texto" rows="20"></textarea>
+            </div>
+
+            <div class="btn-group  botoes">
+                <button type="submit" style="float: right; width: 100%" name="operation" value = "enviar" class="btn btn-default">Enviar</button>
+            </div>
         </div>
-    </div>
+    </form>
     
 </body>
     
