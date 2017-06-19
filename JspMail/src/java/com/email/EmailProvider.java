@@ -238,7 +238,7 @@ public class EmailProvider
             for (int i = 0; i < lista.size(); i++)
             {
                 InputStream is = arq.get(i);
-                File f = new File("/tmp/" + lista.get(i));
+                File f = new File("C:\\Temp\\" + lista.get(i));
                 FileOutputStream fos = new FileOutputStream(f);
                 byte[] buf = new byte[4096];
                 int bytesRead;

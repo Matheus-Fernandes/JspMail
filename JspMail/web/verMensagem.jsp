@@ -46,11 +46,13 @@
                 <div>Anexos: </div> 
                 <br>
                 <div class="content espaco"> 
-                    <c:set var="anexosNome" scope="page" value="${sessionScope.mensagem.getAttachmentsName()}" /> 
-                    <c:set var="anexos" scope="page" value="${sessionScope.mensagem.getAttachments()}" />
-                    <c:forEach var="i" begin="0" end="${pageScope.anexosNome.size()}">
-                        <c:out value="${pageScope.anexosNome.get(i)}" />
-                    </c:forEach>
+                    <c:set var="anexosNome" scope="session" value="${sessionScope.mensagem.getAttachmentsName()}" /> 
+                    <c:set var="anexos" scope="session" value="${sessionScope.mensagem.getAttachments()}" />
+                    <c:if test="${sessionScope.anexosNome.size() > 0}">
+                        <c:forEach var="i" begin="0" end="${sessionScope.anexosNome.size() - 1}">
+                            <a href="anexos.jsp?arquivo=${i}"><c:out value="${sessionScope.anexosNome.get(i)}" /></a>
+                        </c:forEach>
+                    </c:if>
                 </div>
 
                 <button type="submit" style="float: right; width: 100%" name="operation" value = "excluir" class="btn btn-default">Excluir Email</button>

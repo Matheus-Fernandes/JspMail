@@ -74,12 +74,21 @@ public class Mensagem
             return null;
         }
     }
-
-
-    public String getRemetente() {
-        try {
-            return Arrays.toString(this.msg.getFrom());
-        } catch (MessagingException ex) {
+    
+    public String[] getRemetente() 
+    {
+        try 
+        {
+            Address[] add = this.msg.getFrom();
+            String[] str = new String [add.length];
+            
+            for (int i = 0; i < add.length; i++)
+                str[i] = add[i].toString();
+            
+            return str;
+        } 
+        catch (MessagingException ex) 
+        {
             Logger.getLogger(Mensagem.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -208,7 +217,6 @@ public class Mensagem
         {
             String result = "";
             Object content = this.msg.getContent();
-            boolean isHtml = false;
             
             if (content instanceof Multipart) 
             {
@@ -216,19 +224,43 @@ public class Mensagem
                 for (int i = 0; i < mp.getCount(); i++) 
                 {
                     BodyPart bp = mp.getBodyPart(i);
+                    Object bpContent = bp.getContent();
                     
-                    if (Pattern
+                    //É email com anexo
+                    if (bpContent instanceof Multipart) 
+                    {
+                        mp = (Multipart) bpContent;
+                        
+                        for (int j = 0; j < mp.getCount(); j++)
+                        {
+                            bp = mp.getBodyPart(i);
+                            bpContent = bp.getContent();
+                            
+                            if (Pattern
+                            .compile(Pattern.quote("text/html"), Pattern.CASE_INSENSITIVE)
+                            .matcher(bp.getContentType()).find()) 
+                            {
+
+                                result = (String) bpContent;
+                            } 
+                            else
+                            {
+                                result = (String) bpContent;
+                            }
+                        }
+                        
+                        break;
+                    }    
+                    else if (Pattern
                             .compile(Pattern.quote("text/html"), Pattern.CASE_INSENSITIVE)
                             .matcher(bp.getContentType()).find()) 
                     {
 
-                        result = (String) bp.getContent();
-                        isHtml = true;
+                        result = (String) bpContent;
                     } 
-                    else 
+                    else
                     {
-                        if (!isHtml)
-                            result = (String) bp.getContent();
+                        result = (String) bpContent;
                     }
                 }
             }
