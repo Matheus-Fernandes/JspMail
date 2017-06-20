@@ -9,10 +9,44 @@ body{
     height: 100%;
 }
 
+.listaEmails{
+    width: 100%;
+    background-color: #DADFE1;
+
+}
+
+.listaEmails tbody, th, td {
+    border-bottom: 1px solid #eee;
+}
+
+.botao button{
+    right: 0;
+    float: right;
+    margin: 5px; 
+}
+
+.conteudo {
+    padding: 10px;
+}
+
+.botao{
+    width: 10px;
+}
+
+#corpo{
+    position: absolute;
+    display: block;
+    float:right;
+    width: 88%;
+    top: 0;
+    right: 0;
+}
+
 .vertical-menu {
-    width: 200px;
+    width: 12%;
     height: 100%;
     background-color: #eee;
+
 }
 
 .vertical-menu a {
@@ -29,10 +63,9 @@ body{
 }
 
 .vertical-menu a.active {
-    background-color: #4CAF50;
+    background-color: #2980b9;
     color: white;
-
-
+}
 </style>
 
 <head>
@@ -62,26 +95,47 @@ body{
 </c:if>
 
 <div class="vertical-menu">
-  <a href="#">Caixa de Entrada</a>
-  <a href="#" class="active">Emails Cadastrados</a>
-  <a href="#">Sair</a>
+  <a href="dashboard.jsp" class="active">Caixa de Entrada</a>
+  <a href="enviarMensagem.jsp">Enviar Mensagem</a>
+  <a href="gerenciarEmails.jsp">Gerenciar Emails</a>
+  <a href="index.jsp?operation=sair">Sair</a>
 </div>
-
+<div id="corpo">
 <form action="gerenciarEmails.jsp">
-    <table border = "1">
+    <table class = "listaEmails">
     <!-- percorre emails montando as linhas da tabela -->
-    <td><button type="submit"  name="operation" value="cadastrarEmail" class="btn btn-default">Cadastrar Email</button></td> 
+    <thead>
+        <tr bgcolor="2980b9" style="height:  43px">
+            <td></td>
+            <td></td>
+            <td>
+                <button type="submit"  name="operation" value="cadastrarEmail" class="btn btn-default" style=" margin-right: 5px;  float: right; right: 0" hidden="cadastrar email"> 
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+            </td>
+        </tr>
+
+     </thead>
     <c:out value="${emailDao.setEmailP(sessionScope.usuario)}"/>
     <c:forEach var="email" items="${emailDao.emails}">
         <tr> 
             <c:set scope="session" var="emailEditar" value="${email.outroEmail}"/>
-            <td>${email.outroEmail}</td>
-            <td><button type="submit"  name="operation" value="editarEmail" class="btn btn-default">Editar</button></td> 
-            <td><button type="submit"  name="operation" value="excluirEmail" class="btn btn-default">Excluir</button></td> 
+            <td class = "conteudo">${email.outroEmail}</td>
+            <td class = "botao">
+                <button type="submit"  name="operation" value="editarEmail" class="btn btn-default ">
+                    <span class="glyphicon glyphicon-pencil"></span> 
+                </button>
+            </td> 
+            <td class = "botao">
+                <button type="submit"  name="operation" value="excluirEmail" class="btn btn-default">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </td> 
         </tr> 
     </c:forEach>
     </table>
 </form>
+</div>
 
 </body>
 </html>
