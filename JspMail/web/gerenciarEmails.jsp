@@ -95,9 +95,9 @@ body{
 </c:if>
 
 <div class="vertical-menu">
-  <a href="dashboard.jsp" class="active">Caixa de Entrada</a>
+  <a href="dashboard.jsp">Caixa de Entrada</a>
   <a href="enviarMensagem.jsp">Enviar Mensagem</a>
-  <a href="gerenciarEmails.jsp">Gerenciar Emails</a>
+  <a href="gerenciarEmails.jsp" class="active">Gerenciar Emails</a>
   <a href="index.jsp?operation=sair">Sair</a>
 </div>
 <div id="corpo">

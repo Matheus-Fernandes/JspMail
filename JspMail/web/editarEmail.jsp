@@ -10,10 +10,44 @@ body{
     height: 100%;
 }
 
+.listaEmails{
+    width: 100%;
+    background-color: #DADFE1;
+
+}
+
+.listaEmails tbody, th, td {
+    border-bottom: 1px solid #eee;
+}
+
+.botao button{
+    right: 0;
+    float: right;
+    margin: 5px; 
+}
+
+.conteudo {
+    padding: 10px;
+}
+
+.botao{
+    width: 10px;
+}
+
+#corpo{
+    position: absolute;
+    display: block;
+    float:right;
+    width: 88%;
+    top: 0;
+    right: 0;
+}
+
 .vertical-menu {
-    width: 200px;
+    width: 12%;
     height: 100%;
     background-color: #eee;
+
 }
 
 .vertical-menu a {
@@ -30,10 +64,9 @@ body{
 }
 
 .vertical-menu a.active {
-    background-color: #4CAF50;
+    background-color: #2980b9;
     color: white;
-
-
+}
 </style>
 
 <head>
@@ -45,14 +78,9 @@ body{
 </head>
 
 <body>
-<div class="vertical-menu">
-  <a href="#">Caixa de Entrada</a>
-  <a href="#" class="active">Emails Cadastrados</a>
-  <a href="#">Sair</a>
-</div>
     <jsp:useBean id="email" scope="page" class="com.jdbc.Email"/>
     <jsp:useBean id="emailDao" scope="page" class="com.jdbc.Emails"/>
-    <c:set scope="session" var="emailEditarTodo" value="${emailDao.getOutroEmail(sessionScope.emailEditar)}"/>
+    <c:set scope="session" var="emailEditarTodo" value="${emailDao.getOutroEmail(sessionScope.emailEditar, sessionScope.usuario)}"/>
     <c:set scope="session" var="aviso_texto" value=""/>
     <c:set scope="session" var="aviso_tipo" value=""/>
 
@@ -60,6 +88,12 @@ body{
         <jsp:forward page="gerenciarEmails.jsp" />
     </c:if>
     <c:if test = "${param.operation == 'salvar'}">
+    <c:set scope="page" var="camposPreenchidos" value="${param.email == '' || param.senha=='' || param.confirmaSenha=='' || param.servidorRecebimento=='' || param.portaRecebimento=='' || param.servidorEnvio=='' || param.portaEnvio==''}"/>
+    <c:if test="${pageScope.camposPreenchidos}">
+        <c:set scope="session" var="aviso_texto" value="Preencha todos os campos!"/>
+        <c:set scope="session" var="aviso_tipo" value="ERRO"/>
+    </c:if>
+    <c:if test="${!pageScope.camposPreenchidos}">
         ${email.setEmailPrincipal(sessionScope.usuario)} <!-- Setar para o email logado -->
         ${email.setOutroEmail(param.email)}
         ${email.setSenha(param.senha)}
@@ -93,9 +127,17 @@ body{
             <c:set scope="session" var="aviso_tipo" value="ERRO"/>
             
         </c:if>
+        </c:if>
     </c:if>
+                
+<div class="vertical-menu">
+  <a href="dashboard.jsp">Caixa de Entrada</a>
+  <a href="enviarMensagem.jsp">Enviar Mensagem</a>
+  <a href="gerenciarEmails.jsp" class="active">Gerenciar Emails</a>
+  <a href="index.jsp?operation=sair">Sair</a>
+</div>
 
-    <div class="panel panel-default container clearfix" style="width: 300px; padding: 30px">
+    <div id="corpo">
         <form method="get" action="editarEmail.jsp">
 
         <m:titulo valor="Edição"/>

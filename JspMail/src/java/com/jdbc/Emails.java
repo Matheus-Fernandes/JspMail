@@ -98,6 +98,27 @@ public class Emails
     	return retorno;
     }
     
+    public boolean temOutroEmailNessePrincipal(String email, String principal) throws Exception
+    {
+        boolean retorno = false;
+        
+        try{
+            String sql;
+            sql = "SELECT * FROM EmailCadastrado WHERE outroEmail='"+email+"' AND emailPrincipal='"+principal+"'";
+            DAOs.getBD().prepareStatement(sql);
+            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+            
+            retorno = resultado.first();
+        }
+        
+        catch(SQLException erro)
+    	{
+    		throw new Exception ("Erro ao procurar email.");
+    	}
+    	
+    	return retorno;
+    }
+    
     public boolean cadastrado (Email email) throws Exception
     {
     	boolean retorno = false;
@@ -275,6 +296,39 @@ public class Emails
             String sql;
 
             sql = "SELECT * FROM EmailCadastrado WHERE outroEmail ='"+outroEmail+"'";
+
+            DAOs.getBD().prepareStatement (sql);
+
+            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+
+            if (!resultado.first())
+                throw new Exception ("Nao cadastrado");
+
+            email = new Email (resultado.getString("emailPrincipal"), 
+                               resultado.getString("outroEmail"), 
+                               resultado.getString("senha"), 
+                               resultado.getString("servidorRecebimento"), 
+                               Integer.parseInt(resultado.getString("portaRecebimento")), 
+                               resultado.getString("servidorEnvio"), 
+                               Integer.parseInt(resultado.getString("portaEnvio")));
+        }
+        catch (SQLException erro)
+        {
+            throw new Exception ("Erro ao procurar email");
+        }
+
+        return email;
+    }
+    
+    public Email getOutroEmail (String outroEmail, String principal) throws Exception
+    {
+        Email email = null;
+
+        try
+        {
+            String sql;
+
+            sql = "SELECT * FROM EmailCadastrado WHERE outroEmail ='"+outroEmail+"' AND emailPrincipal='"+principal+"'";
 
             DAOs.getBD().prepareStatement (sql);
 
