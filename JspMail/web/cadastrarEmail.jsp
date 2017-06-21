@@ -41,6 +41,7 @@ body{
     width: 88%;
     top: 0;
     right: 0;
+    padding: 30px;
 }
 
 .vertical-menu {
@@ -128,9 +129,7 @@ body{
 
     <div id="corpo">
         <form method="get" action="cadastrarEmail.jsp">
-
-        <m:titulo valor="Cadastro"/>
-        <br>
+            
         <m:campo nome="email" tipo="text" label="Email"/>
         <m:campo nome="senha" tipo="password" label="Senha"/>
         <m:campo nome="servidorRecebimento" tipo="text" label="Servidor de Recebimento"/>

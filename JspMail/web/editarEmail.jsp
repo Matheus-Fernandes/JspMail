@@ -41,6 +41,7 @@ body{
     width: 88%;
     top: 0;
     right: 0;
+    padding: 30px;
 }
 
 .vertical-menu {
@@ -139,9 +140,7 @@ body{
 
     <div id="corpo">
         <form method="get" action="editarEmail.jsp">
-
-        <m:titulo valor="Edição"/>
-        <br>
+            
         <!-- Colocar os valores do email que se deseja alterar nos campos! -->
         <m:campo nome="email" tipo="text" label="Email" value="${sessionScope.emailEditar}"/> 
         <m:campo nome="senha" tipo="password" label="Senha" value="${sessionScope.emailEditarTodo.getSenha()}"/>
