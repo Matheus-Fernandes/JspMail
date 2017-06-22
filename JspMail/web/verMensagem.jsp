@@ -42,7 +42,7 @@
                 <br> 
                 <div>Conteúdo: </div> 
                 <br>
-                <div class="content espaco"> <c:out value="${sessionScope.mensagem.getConteudo()}" escapeXml="false" /> </div>
+                <div class="content espaco"> <c:out value="${sessionScope.mensagem.getConteudo().toString()}" escapeXml="false" /> </div>
                 <div>Anexos: </div> 
                 <br>
                 <div class="content espaco"> 
@@ -57,6 +57,7 @@
 
                 <button type="submit" style="float: right; width: 100%" name="operation" value = "excluir" class="btn btn-default">Excluir Email</button>
             </div>
+                    <m:aviso valor="${sessionScope.aviso_texto}" tipo="${sessionScope.aviso_tipo}"/>
             </form>
         </c:if>
     </body>

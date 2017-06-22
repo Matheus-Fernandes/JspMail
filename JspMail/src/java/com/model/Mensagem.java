@@ -75,17 +75,20 @@ public class Mensagem
         }
     }
     
-    public String[] getRemetente() 
+    public String getRemetente() 
     {
         try 
         {
-            Address[] add = this.msg.getFrom();
-            String[] str = new String [add.length];
+            /*Address[] add = this.msg.getFrom();
+            String[] str = new String [add.length];*/
+            Address[] froms = msg.getFrom();
+            String enviador = froms == null ? null : ((InternetAddress) froms[0]).getAddress();
             
-            for (int i = 0; i < add.length; i++)
+            /*for (int i = 0; i < add.length; i++)
                 str[i] = add[i].toString();
             
-            return str;
+            return str;*/
+            return enviador;
         } 
         catch (MessagingException ex) 
         {

@@ -94,13 +94,15 @@ body{
             <div class="form-group">
                 <label for="texto"></label>
                 <textarea class="form-control" 
-                          id="texto" name="texto" rows="20"></textarea>
+                          id="conteudo" name="conteudo" rows="20"></textarea>
             </div>
 
             <div class="btn-group  botoes">
                 <button type="submit" style="float: right; width: 100%" name="operation" value = "enviar" class="btn btn-default">Enviar</button>
             </div>
         </div>
+            
+            <m:aviso valor="${sessionScope.aviso_texto}" tipo="${sessionScope.aviso_tipo}"/>
     </form>
     
 </body>
