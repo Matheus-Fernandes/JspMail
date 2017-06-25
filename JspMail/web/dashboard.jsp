@@ -18,14 +18,36 @@ body{
     background-color: #eee;
 }
 
-.listaMensagens{
-    float: right;
+.corpo{
     position: absolute;
-    top: 0px;
+    top: 0;
     right: 0;
     width: 88%;
+}
 
+.seletor{
+    position: relative;
+    float : right;
+    height: 100%;
+    width: 17%;
+    background-color: #ccc; 
+    right: 0;
+}
 
+.seletor list{
+    height: 100%;
+}
+
+.seletor list ul{
+    padding: 5px;
+}
+
+.listaMensagens{
+    position: relative;
+    float: left;
+    top: 0px;
+    left: 0;
+    width: 83%;
 }
 .listaMensagens  a{
     color: black;
@@ -92,14 +114,22 @@ body{
 <body>
 <jsp:useBean id="dashboard" scope="page" class="com.web.DashboardManagedBean"/>
 <jsp:useBean id="emails" scope="page" class="com.jdbc.Emails" />
-${dashboard.setEmail(emails.getEmailPrincipal(sessionScope.usuario))}
+
+<c:set scope="session" var="novoEmail" value="${emails.getEmailPrincipal(sessionScope.usuario)}"/>
+
 <div class="vertical-menu">
   <a href="dashboard.jsp" class="active">Caixa de Entrada</a>
   <a href="enviarMensagem.jsp">Enviar Mensagem</a>
   <a href="gerenciarEmails.jsp">Gerenciar Emails</a>
   <a href="index.jsp?operation=sair">Sair</a>
+  
 </div>
 
+<c:if test="${param.operation == 'selecionarEmail'}">
+    <c:set scope="session" var="novoEmail" value="${emails.getOutroEmail(param.emailSelecionado)}"/>
+</c:if>
+    ${dashboard.setEmail(sessionScope.novoEmail)}
+    
 <c:if test="${param.operation == 'verMensagem'}">
     <c:set scope="session" var="mensagem" value="${dashboard.getMensagem(param.id)}"/>
     <c:redirect url="verMensagem.jsp"/>
@@ -119,6 +149,8 @@ ${dashboard.setEmail(emails.getEmailPrincipal(sessionScope.usuario))}
 <c:if test="${not empty param.pagina}">
     <c:set scope="page" var="pagina" value="${param.pagina}"/>
 </c:if>
+
+<div class="corpo">
 
 <table class="listaMensagens">
 <!-- percorre contatos montando as linhas da tabela -->
@@ -173,6 +205,22 @@ ${dashboard.setEmail(emails.getEmailPrincipal(sessionScope.usuario))}
     </tr>
 </tfoot>
 </table>
+            
+            
+<div class="seletor">
+    <list>
+      <c:forEach var="email" items="${emails.getEmails(sessionScope.usuario)}">
+
+        <ul value="${email.getOutroEmail()}">
+            <a href="dashboard.jsp?operation=selecionarEmail&emailSelecionado=${email.getOutroEmail()}">
+            ${email.getOutroEmail()}
+            </a>
+        </ul>
+
+      </c:forEach>
+    </list>
+</div>
+</div>
 
 </body>
 </html>

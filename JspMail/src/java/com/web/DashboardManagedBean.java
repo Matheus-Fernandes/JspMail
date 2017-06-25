@@ -9,8 +9,6 @@ import com.email.EmailProvider;
 import com.email.exception.InvalidPageException;
 import com.model.Mensagem;
 import com.jdbc.Email;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Folder;
@@ -29,21 +27,17 @@ public class DashboardManagedBean
     private Mensagem[] mensagens;
     private EmailProvider ep;
     private final int MENSAGENS_PAGINA = 20;
+
     
     public void setEmail(Email email)
     {
         try 
-        {
-            if (this.store != null)
-                this.store.close();
-            
-            if (this.folder != null)
-                this.folder.close(true);
-            
+        {            
             this.ep = new EmailProvider(email);
             this.store = this.ep.getStore();
             this.folder = this.store.getFolder("INBOX");
             this.getCaixaEntrada(1);
+
         } 
         catch (MessagingException ex) 
         {
@@ -53,7 +47,7 @@ public class DashboardManagedBean
     
     public DashboardManagedBean()
     {
-        
+
     }
     
     public Mensagem[] getCaixaEntrada(int pagina)

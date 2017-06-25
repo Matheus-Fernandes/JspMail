@@ -65,7 +65,7 @@ body{
     <jsp:useBean id="managed" scope="page" class="com.web.EnviarMensagemManagedBean" />
     <jsp:useBean id="provider" scope="page" class="com.email.EmailProvider"/>
     <jsp:useBean id="emails" scope="page" class="com.jdbc.Emails"/>
-    ${provider.setEmail(emails.getEmailPrincipal(sessionScope.usuario))}
+    ${provider.setEmail(sessionScope.novoEmail)}
     
     <c:if test="${param.operation == 'enviar'}">
         <c:set scope="page" var="mensagemEnviada" value="${provider.sendMessage(param.assunto, managed.gerarVetorDestinatario(param.destinatario), param.conteudo, null)}"/><%-- params de sendMessage--%>

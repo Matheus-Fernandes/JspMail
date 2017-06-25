@@ -33,7 +33,7 @@
     <body>
         
         <div class="panel panel-default container clearfix" style="width: 300px; padding: 30px">
-            <form method="get" action="index.jsp">
+            <form method="post" action="index.jsp">
             
             <m:titulo valor="Email Maligno" />
             <br>

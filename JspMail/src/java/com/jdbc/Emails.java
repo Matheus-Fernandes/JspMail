@@ -121,7 +121,7 @@ public class Emails
     
     public boolean cadastrado (Email email) throws Exception
     {
-    	boolean retorno = false;
+        boolean retorno = false;
     	
     	try
     	{
@@ -391,6 +391,42 @@ public class Emails
     
     public void setEmailP(String eP){
         this.emailP = eP;
+    }
+    
+    public List<Email> getEmails(String email) throws Exception
+    {
+        List<Email> listinha = new ArrayList<>();
+
+        try
+        {
+            String sql;
+
+            sql = "SELECT * FROM EmailCadastrado WHERE emailPrincipal='"+email+"'";
+
+            DAOs.getBD().prepareStatement (sql);
+
+            MeuResultSet resultado = (MeuResultSet)DAOs.getBD().executeQuery ();
+            
+            Email linha;
+
+            while (resultado.next()){
+                linha = new Email();
+                linha.setEmailPrincipal(resultado.getString(2));
+                linha.setOutroEmail(resultado.getString(3));
+                linha.setSenha(resultado.getString(4));
+                linha.setServidorRecebimento(resultado.getString(5));
+                linha.setPortaRecebimento(Integer.parseInt(resultado.getString(6)));
+                linha.setServidorEnvio(resultado.getString(7));
+                linha.setPortaEnvio(Integer.parseInt(resultado.getString(8)));
+                listinha.add(linha);
+            }
+        }
+        catch (SQLException erro)
+        {
+            throw new Exception ("Erro ao recuperar emails");
+        }
+
+        return listinha;
     }
     
     public List<Email> getEmails() throws Exception
